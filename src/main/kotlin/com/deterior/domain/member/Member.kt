@@ -7,7 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @Entity
-abstract class Member(
+class Member (
     private var username: String,
     private var password: String,
     private var email: String,
@@ -23,6 +23,10 @@ abstract class Member(
             .map { SimpleGrantedAuthority(it) }
             .toMutableList()
     }
+
+    override fun getPassword(): String = password
+
+    override fun getUsername(): String = username
 
     override fun isAccountNonExpired(): Boolean {
         return true

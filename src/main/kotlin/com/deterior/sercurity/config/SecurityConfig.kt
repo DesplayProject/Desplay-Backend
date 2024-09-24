@@ -26,9 +26,10 @@ class SecurityConfig @Autowired constructor(
         return http
             .httpBasic { it.disable() }         //bearer를 사용하기 위함
             .csrf { it.disable() }              //토큰을 사용하므로 필요없음
+            .formLogin { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests{ it
-                .requestMatchers("/api/member/sign-in").permitAll()
+                .requestMatchers("/api/member/sign-in", "/error").permitAll()
                 .requestMatchers(("/test/member/user")).hasRole("USER")
                 .requestMatchers("/test/index").permitAll()
                 .anyRequest().authenticated()

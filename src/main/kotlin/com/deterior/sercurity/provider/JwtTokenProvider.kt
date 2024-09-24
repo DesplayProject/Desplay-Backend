@@ -68,7 +68,7 @@ class JwtTokenProvider @Autowired constructor(
             .toString().split(",")
             .map { SimpleGrantedAuthority(it) }
             .toList()
-        val principal = User(claims.subject, null, authorities)
+        val principal = User(claims.subject, "", authorities)
         return UsernamePasswordAuthenticationToken(principal, "", authorities)
     }
 
