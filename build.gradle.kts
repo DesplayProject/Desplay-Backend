@@ -52,6 +52,9 @@ dependencies {
     //validate
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    //guava
+    implementation("com.google.guava:guava:11.0.2")
+
     //kotest
     testImplementation("io.kotest:kotest-runner-junit5:5.4.2")
     testImplementation("io.kotest:kotest-assertions-core:5.4.2")

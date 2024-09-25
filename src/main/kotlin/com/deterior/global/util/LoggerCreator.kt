@@ -1,4 +1,4 @@
-package com.deterior.global
+package com.deterior.global.util
 
 import org.slf4j.LoggerFactory
 

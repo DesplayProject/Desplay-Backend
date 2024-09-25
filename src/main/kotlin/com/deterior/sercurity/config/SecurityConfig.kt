@@ -21,6 +21,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig @Autowired constructor(
     val jwtTokenProvider: JwtTokenProvider
 ) {
+    val permitAllList: MutableList<String> = mutableListOf(
+        "/api/member/sign-in",
+        "/api/member/sign-up",
+        "error"
+    )
+
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http
@@ -29,7 +35,7 @@ class SecurityConfig @Autowired constructor(
             .formLogin { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests{ it
-                .requestMatchers("/api/member/sign-in", "/error").permitAll()
+                .requestMatchers(*permitAllList.toTypedArray()).permitAll()
                 .requestMatchers(("/test/member/user")).hasRole("USER")
                 .requestMatchers("/test/index").permitAll()
                 .anyRequest().authenticated()

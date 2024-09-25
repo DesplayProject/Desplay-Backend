@@ -1,6 +1,7 @@
 package com.deterior.domain.member
 
 import com.deterior.domain.entitiy.BaseEntity
+import com.deterior.domain.member.dto.request.SignUpRequest
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -9,19 +10,31 @@ import org.springframework.security.core.userdetails.UserDetails
 @Entity
 class Member (
     private var username: String,
+
     private var password: String,
-    private var email: String,
-) : BaseEntity(), UserDetails {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long? = null
+
+    var email: String,
 
     @ElementCollection(fetch = FetchType.EAGER)
     var roles: MutableList<String> = mutableListOf()
+) : BaseEntity(), UserDetails {
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    val id: Long? = null
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return roles
             .map { SimpleGrantedAuthority(it) }
             .toMutableList()
+    }
+
+    companion object {
+        fun toEntity(request: SignUpRequest, roles: MutableList<String>): Member =
+            Member(
+                username = request.username,
+                password = request.password,
+                email = request.email,
+                roles = roles
+            )
     }
 
     override fun getPassword(): String = password

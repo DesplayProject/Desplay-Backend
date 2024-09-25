@@ -1,6 +1,8 @@
 package com.deterior.domain.controller
 
-import com.deterior.domain.member.dto.SignInDto
+import com.deterior.domain.member.dto.request.SignInRequest
+import com.deterior.domain.member.dto.request.SignUpRequest
+import com.deterior.domain.member.dto.response.SignUpResponse
 import com.deterior.domain.member.service.MemberService
 import com.deterior.sercurity.dto.JwtToken
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,11 +17,17 @@ class MemberController @Autowired constructor(
 ) {
     @PostMapping("/api/member/sign-in")
     fun signIn(
-        @RequestBody signInDto: SignInDto
+        @RequestBody signInRequest: SignInRequest
     ): ResponseEntity<JwtToken> {
-        val username = signInDto.username
-        val password = signInDto.password
-        val jwtToken = memberService.signIn(username, password)
+        val jwtToken = memberService.signIn(signInRequest)
         return ResponseEntity.ok(jwtToken)
+    }
+
+    @PostMapping("/api/member/sign-up")
+    fun signUp(
+        @RequestBody signUpRequest: SignUpRequest
+    ): ResponseEntity<SignUpResponse> {
+        val signUpResponse = memberService.signUp(signUpRequest)
+        return ResponseEntity.ok(signUpResponse)
     }
 }

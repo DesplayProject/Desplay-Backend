@@ -1,7 +1,7 @@
 package com.deterior.sercurity.provider
 
-import com.deterior.global.ApplicationProperties
-import com.deterior.global.LoggerCreator
+import com.deterior.global.util.ApplicationProperties
+import com.deterior.global.util.LoggerCreator
 import com.deterior.sercurity.dto.JwtToken
 import com.deterior.sercurity.exception.NoAuthorizationInTokenException
 import io.jsonwebtoken.*

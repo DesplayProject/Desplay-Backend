@@ -15,19 +15,17 @@ import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Private
 @Service
 class JwtUserDetailsService @Autowired constructor(
     private val memberRepository: MemberRepository,
-    private val passwordEncoder: PasswordEncoder
 ) : UserDetailsService {
+
     override fun loadUserByUsername(username: String?): UserDetails {
-        return memberRepository.findByUsername(username!!)
-            .map { createUserDetails(it) }
-            .orElseThrow()
+        return memberRepository.findByUsername(username!!).createUserDetails()
     }
 
-    private fun createUserDetails(member: Member): UserDetails {
+    private fun Member.createUserDetails(): UserDetails {
         return User.builder()
-            .username(member.username)
-            .password(passwordEncoder.encode(member.password))
-            .roles(*member.roles.toTypedArray())
+            .username(this.username)
+            .password(this.password)
+            .roles(*this.roles.toTypedArray())
             .build()
     }
 }
