@@ -4,17 +4,16 @@ import com.deterior.domain.member.Member
 import com.deterior.domain.member.dto.request.SignInRequest
 import com.deterior.domain.member.dto.request.SignUpRequest
 import com.deterior.domain.member.dto.response.SignUpResponse
-import com.deterior.domain.member.exception.DuplicateEmailException
-import com.deterior.domain.member.exception.DuplicateUsernameException
-import com.deterior.domain.member.exception.RegisterException
+import com.deterior.global.exception.DuplicateEmailException
+import com.deterior.global.exception.DuplicateUsernameException
 import com.deterior.domain.member.repository.MemberRepository
+import com.deterior.global.exception.dto.ErrorCode
 import com.deterior.sercurity.dto.JwtToken
 import com.deterior.sercurity.provider.JwtTokenProvider
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -36,10 +35,10 @@ class MemberServiceImpl @Autowired constructor(
         val username = signUpRequest.username
         val email = signUpRequest.email
         if(memberRepository.existsByUsername(username)) {
-            throw DuplicateUsernameException("중복된 username입니다.", username)
+            throw DuplicateUsernameException("중복된 username입니다.", username, ErrorCode.DUPLICATE_USERNAME)
         }
         if(memberRepository.existsByEmail(email)) {
-            throw DuplicateEmailException("중복된 email입니다.", email)
+            throw DuplicateEmailException("중복된 email입니다.", email, ErrorCode.DUPLICATE_EMAIL)
         }
         signUpRequest.password = passwordEncoder.encode(signUpRequest.password)
         val roles = mutableListOf("USER")
