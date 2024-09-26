@@ -24,7 +24,8 @@ class SecurityConfig @Autowired constructor(
     val permitAllList: MutableList<String> = mutableListOf(
         "/api/member/sign-in",
         "/api/member/sign-up",
-        "error"
+        "error",
+        "/mail/**"
     )
 
     @Bean

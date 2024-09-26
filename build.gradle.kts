@@ -33,6 +33,9 @@ dependencies {
     //database
     runtimeOnly("com.mysql:mysql-connector-j")
 
+    //mail
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+
     //security
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
