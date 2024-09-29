@@ -5,6 +5,8 @@ import com.deterior.sercurity.provider.JwtTokenProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -29,6 +31,7 @@ class SecurityConfig @Autowired constructor(
     )
 
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http
             .httpBasic { it.disable() }         //bearer를 사용하기 위함
@@ -37,12 +40,23 @@ class SecurityConfig @Autowired constructor(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests{ it
                 .requestMatchers(*permitAllList.toTypedArray()).permitAll()
-                .requestMatchers(("/test/member/user")).hasRole("USER")
-                .requestMatchers("/test/index").permitAll()
+//                .requestMatchers(("/test/member/user")).hasRole("USER")
+//                .requestMatchers("/test/index").permitAll()
                 .anyRequest().authenticated()
             }
             .addFilterBefore(JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)
             .build()
+    }
+
+    @Bean
+    fun testSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        return http
+            .authorizeHttpRequests { it
+                .requestMatchers("/test/member/user").hasRole("USER")
+                .requestMatchers("test/index").permitAll()
+            }
+            .build()
+        ;
     }
 
     @Bean

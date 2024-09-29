@@ -1,4 +1,4 @@
-package com.deterior.domain.controller
+package com.deterior.domain.member.controller
 
 import com.deterior.domain.member.dto.request.SignInRequest
 import com.deterior.domain.member.dto.request.SignUpRequest

@@ -1,4 +1,4 @@
-package com.deterior.domain.entitiy
+package com.deterior.domain
 
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.MappedSuperclass

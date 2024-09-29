@@ -25,7 +25,7 @@ class JwtAuthenticationFilter (
                 SecurityContextHolder.getContextHolderStrategy().context.authentication = authentication
             }
         } catch (exception: NullPointerException) {
-            log.warn("인증되지 않은 사용자의 접속 요청.")
+            log.info("인증되지 않은 사용자의 접속 요청.")
         }
         chain?.doFilter(request, response)
     }

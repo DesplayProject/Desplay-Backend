@@ -1,6 +1,6 @@
 package com.deterior.domain.member
 
-import com.deterior.domain.entitiy.BaseEntity
+import com.deterior.domain.BaseEntity
 import com.deterior.domain.member.dto.request.SignUpRequest
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority

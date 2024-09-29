@@ -1,7 +1,9 @@
 package com.deterior.global.controller
 
-import com.deterior.global.dto.MailSendRequest
-import com.deterior.global.dto.MailSendResponse
+import com.deterior.global.dto.*
+import com.deterior.global.exception.EmailAuthenticationFailException
+import com.deterior.global.exception.dto.ErrorCode
+import com.deterior.global.repository.MailCheckDao
 import com.deterior.global.service.MailService
 import com.deterior.global.service.MailType
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,17 +17,30 @@ import java.util.concurrent.ConcurrentHashMap
 @Controller
 @RequestMapping("/mail")
 class MailController @Autowired constructor(
-    private val mailService: MailService
+    private val mailService: MailService,
+    private val mailCheckDao: MailCheckDao
 ) {
-    val authNumbers = ConcurrentHashMap<String, Int>()
 
     @PostMapping("/auth-send")
     fun sendAuthMail(
         @RequestBody mailSendRequest: MailSendRequest
     ): ResponseEntity<MailSendResponse> {
+        val mailDto = MailDto(
+            receiverMail = mailSendRequest.receiverMail,
+            type = MailType.EMAIL_AUTH
+        )
         val mail = mailSendRequest.receiverMail
-        val authNum = mailService.sendMail(MailType.EMAIL_AUTH, mail)
-        authNumbers[mail] = authNum
+        mailService.sendMail(mailDto)
         return ResponseEntity.ok(MailSendResponse(mail))
+    }
+
+    @PostMapping("/check")
+    fun checkAuthMail(
+        @RequestBody mailCheckRequest: MailCheckRequest
+    ): ResponseEntity<MailCheckResponse> {
+        val mail = mailCheckRequest.receiverMail
+        val authNUm = mailCheckRequest.authNumber
+        mailCheckDao.authNumberCheck(mail, authNUm)
+        return ResponseEntity.ok(MailCheckResponse(mail))
     }
 }

@@ -1,5 +1,7 @@
 package com.deterior.global.service
 
+import com.deterior.global.dto.MailDto
+import com.deterior.global.repository.MailCheckDao
 import com.deterior.global.util.ApplicationProperties
 import jakarta.mail.internet.MimeMessage
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,19 +14,21 @@ import kotlin.math.abs
 @Service
 class MailService @Autowired constructor(
     val javaMailSender: JavaMailSender,
+    val mailCheckDao: MailCheckDao,
     val applicationProperties: ApplicationProperties
 ){
-    fun sendMail(mailType: MailType, receiverMail: String): Int {
+    fun sendMail(mailDto: MailDto) {
+        val mailType = mailDto.type
+        val receiverMail = mailDto.receiverMail
         val message = createMessageHeader(mailType, receiverMail)
-        val authNum = createNumber()
         when (mailType) {
             MailType.EMAIL_AUTH -> {
+                val authNum = mailCheckDao.saveAuthNumber(receiverMail)
                 message.subject = mailType.title
                 message.setText(mailType.content + authNum, "UTF-8", "html")
                 javaMailSender.send(message)
             }
         }
-        return authNum
     }
 
     private fun createMessageHeader(mailType: MailType, receiverMail: String): MimeMessage {
@@ -33,6 +37,4 @@ class MailService @Autowired constructor(
         message.setRecipients(MimeMessage.RecipientType.TO, receiverMail)
         return message
     }
-
-    private fun createNumber() = abs(SecureRandom.getInstanceStrong().nextInt())
 }
