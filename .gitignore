@@ -147,4 +147,3 @@ replay_pid*
 /.gradle/
 /build/
 /build/classes/kotlin/main/
-/test
