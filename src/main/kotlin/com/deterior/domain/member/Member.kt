@@ -18,8 +18,6 @@ class Member (
     @ElementCollection(fetch = FetchType.EAGER)
     var roles: MutableList<String> = mutableListOf()
 ) : BaseEntity(), UserDetails {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long? = null
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return roles
