@@ -6,7 +6,7 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 #application.yml
-/src/test
+/src/test/kotlin/com/deterior
 
 # User-specific stuff
 .idea/**/workspace.xml
