@@ -20,7 +20,7 @@ class MailService @Autowired constructor(
     fun sendMail(mailDto: MailDto) {
         val mailType = mailDto.type
         val receiverMail = mailDto.receiverMail
-        val message = createMessageHeader(mailType, receiverMail)
+        val message = createMessageHeader(receiverMail)
         when (mailType) {
             MailType.EMAIL_AUTH -> {
                 val authNum = mailCheckDao.saveAuthNumber(receiverMail)
@@ -31,7 +31,7 @@ class MailService @Autowired constructor(
         }
     }
 
-    private fun createMessageHeader(mailType: MailType, receiverMail: String): MimeMessage {
+    private fun createMessageHeader(receiverMail: String): MimeMessage {
         val message = javaMailSender.createMimeMessage()
         message.setFrom(applicationProperties.mail.username)
         message.setRecipients(MimeMessage.RecipientType.TO, receiverMail)
