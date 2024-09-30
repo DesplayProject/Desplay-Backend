@@ -40,8 +40,6 @@ class SecurityConfig @Autowired constructor(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests{ it
                 .requestMatchers(*permitAllList.toTypedArray()).permitAll()
-//                .requestMatchers(("/test/member/user")).hasRole("USER")
-//                .requestMatchers("/test/index").permitAll()
                 .anyRequest().authenticated()
             }
             .addFilterBefore(JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)
@@ -49,11 +47,12 @@ class SecurityConfig @Autowired constructor(
     }
 
     @Bean
+    //@Order(Ordered.HIGHEST_PRECEDENCE)
     fun testSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http
             .authorizeHttpRequests { it
                 .requestMatchers("/test/member/user").hasRole("USER")
-                .requestMatchers("test/index").permitAll()
+                .requestMatchers("/test/index").permitAll()
             }
             .build()
         ;
