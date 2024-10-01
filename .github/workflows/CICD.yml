@@ -21,9 +21,6 @@ jobs:
           distribution: 'temurin'
           server-id: github 
           settings-path: ${{ github.workspace }}
-
-      - name: Build with Gradle
-        run : ./gradlew clean build -x test
       
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -37,6 +34,9 @@ jobs:
           
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run : ./gradlew clean build -x test
 
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2.4.2
