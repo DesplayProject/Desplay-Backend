@@ -21,6 +21,13 @@ jobs:
           distribution: 'temurin'
           server-id: github 
           settings-path: ${{ github.workspace }}
+
+      - name: make application.yml
+        run: |
+          mkdir -p ./src/main/resources
+          cd ./src/main/resources
+          touch ./application.yml
+          echo "${{ secrets.APPLICATION }}" > ./application.yml
       
       - name: Cache Gradle packages
         uses: actions/cache@v2
