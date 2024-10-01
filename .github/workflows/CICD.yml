@@ -43,7 +43,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run : ./gradlew clean build -x test
+        run : ./gradlew build -x test
 
       - name: Publish to GitHub Packages
         uses: gradle/gradle-build-action@v2.4.2
