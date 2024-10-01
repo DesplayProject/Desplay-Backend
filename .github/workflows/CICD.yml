@@ -21,12 +21,9 @@ jobs:
           distribution: 'temurin'
           server-id: github 
           settings-path: ${{ github.workspace }}
-      - name: make application-database.yaml
-        run: |
-          cd ./src/main/resources
-          touch ./application.yaml
-          echo "${{ secrets.APPLICATION }}" >> ./application.yaml
-        shell: bash
+
+      - name: Build with Gradle
+        run : ./gradlew clean build -x test
       
       - name: Cache Gradle packages
         uses: actions/cache@v2
