@@ -27,7 +27,8 @@ class SecurityConfig @Autowired constructor(
         "/api/member/sign-in",
         "/api/member/sign-up",
         "error",
-        "/mail/**"
+        "/mail/**",
+        "/env"
     )
 
     @Bean
