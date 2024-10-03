@@ -9,6 +9,6 @@ import jakarta.persistence.Id
 @Entity
 class Item(
     var name: String,
-    var price: Int,
+    val link: String,
 ) : BaseEntity() {
 }
