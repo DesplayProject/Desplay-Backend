@@ -1,10 +1,7 @@
 package com.deterior.global.repository
 
-import com.deterior.global.dto.MailCheckResponse
-import com.deterior.global.dto.MailDto
 import com.deterior.global.exception.EmailAuthenticationFailException
-import com.deterior.global.exception.dto.ErrorCode
-import org.springframework.http.ResponseEntity
+import com.deterior.global.exception.ErrorCode
 import org.springframework.stereotype.Repository
 import java.security.SecureRandom
 import java.util.concurrent.ConcurrentHashMap

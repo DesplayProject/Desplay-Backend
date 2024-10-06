@@ -7,7 +7,7 @@ import com.deterior.domain.member.dto.response.SignUpResponse
 import com.deterior.global.exception.DuplicateEmailException
 import com.deterior.global.exception.DuplicateUsernameException
 import com.deterior.domain.member.repository.MemberRepository
-import com.deterior.global.exception.dto.ErrorCode
+import com.deterior.global.exception.ErrorCode
 import com.deterior.sercurity.dto.JwtToken
 import com.deterior.sercurity.provider.JwtTokenProvider
 import jakarta.transaction.Transactional

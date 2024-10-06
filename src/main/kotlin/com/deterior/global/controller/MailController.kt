@@ -1,8 +1,6 @@
 package com.deterior.global.controller
 
 import com.deterior.global.dto.*
-import com.deterior.global.exception.EmailAuthenticationFailException
-import com.deterior.global.exception.dto.ErrorCode
 import com.deterior.global.repository.MailCheckDao
 import com.deterior.global.service.MailService
 import com.deterior.global.service.MailType
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import java.util.concurrent.ConcurrentHashMap
 
 @Controller
 @RequestMapping("/mail")

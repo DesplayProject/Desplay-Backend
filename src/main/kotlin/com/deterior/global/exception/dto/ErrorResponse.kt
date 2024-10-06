@@ -1,7 +1,6 @@
 package com.deterior.global.exception.dto
 
-import org.springframework.http.HttpStatus
-import java.lang.Exception
+import com.deterior.global.exception.ErrorCode
 
 class ErrorResponse(
     val status: Int,
