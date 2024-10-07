@@ -1,21 +1,27 @@
 package com.deterior.domain.image.service
 
+import com.deterior.domain.board.repository.BoardRepository
 import com.deterior.domain.image.Image
 import com.deterior.domain.image.dto.FileUploadDto
 import com.deterior.domain.image.repository.ImageRepository
 import com.deterior.global.util.ApplicationProperties
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.io.File
 import java.util.*
+import kotlin.NoSuchElementException
 
 @Service
 class DBFileUploadService @Autowired constructor(
     val imageRepository: ImageRepository,
+    val boardRepository: BoardRepository,
     val applicationProperties: ApplicationProperties
 ) : FileUploadService{
 
+    @Transactional
     override fun saveFile(fileUploadDto: FileUploadDto) {
+        val board = boardRepository.findById(fileUploadDto.boardDto.boardId).orElseThrow{ NoSuchElementException() }
         for (image in fileUploadDto.files) {
             val originFileName: String? = image.originalFilename
             val saveFileName = createSaveFileName(originFileName)
@@ -24,7 +30,7 @@ class DBFileUploadService @Autowired constructor(
             val image = Image(
                 originFileName = originFileName,
                 saveFileName = saveFileName,
-                board = fileUploadDto.board,
+                board = board,
             )
             imageRepository.save(image)
         }

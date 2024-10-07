@@ -20,12 +20,4 @@ class Item(
     init {
         board.items.add(this)
     }
-
-    companion object {
-        fun toEntity(itemSaveDto: ItemSaveDto): Item =
-            Item(
-                title = itemSaveDto.title,
-                board = itemSaveDto.board,
-            )
-    }
 }
