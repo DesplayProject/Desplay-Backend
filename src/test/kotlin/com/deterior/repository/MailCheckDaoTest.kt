@@ -1,9 +1,8 @@
-package com.deterior.global
+package com.deterior.repository
 
 import com.deterior.global.exception.EmailAuthenticationFailException
 import com.deterior.global.repository.MailCheckDao
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.config.LogLevel
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,14 +1,14 @@
-package com.deterior.domain.member.service
+package com.deterior.service
 
 import com.deterior.domain.member.Member
 import com.deterior.domain.member.dto.request.SignUpRequest
 import com.deterior.domain.member.repository.MemberRepository
+import com.deterior.domain.member.service.MemberService
 import com.deterior.global.exception.DuplicateEmailException
 import com.deterior.global.exception.DuplicateUsernameException
-import com.deterior.util.DatabaseCleanup
+import com.deterior.DatabaseCleanup
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
-import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 

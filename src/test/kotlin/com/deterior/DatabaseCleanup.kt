@@ -1,14 +1,12 @@
-package com.deterior.util
+package com.deterior
 
 import com.google.common.base.CaseFormat
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import jakarta.transaction.Transactional
-import org.assertj.core.util.introspection.CaseFormatUtils
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.stereotype.Component
-import org.springframework.test.context.ActiveProfiles
 
 @Component
 class DatabaseCleanup : InitializingBean {

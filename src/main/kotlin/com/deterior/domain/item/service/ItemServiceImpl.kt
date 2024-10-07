@@ -14,9 +14,12 @@ class ItemServiceImpl @Autowired constructor(
     val itemRepository: ItemRepository,
     val boardRepository: BoardRepository
 ) : ItemService {
-    override fun saveItem(itemSaveDto: ItemSaveDto): ItemSaveResponse {
-        val board = boardRepository.findById(itemSaveDto.boardId).orElseThrow()
-        val item = itemRepository.save(Item.toEntity(itemSaveDto.title, board))
-        return ItemSaveResponse.toResponse(item)
+    override fun saveItem(itemSaveDto: ItemSaveDto) {
+        itemRepository.save(
+            Item(
+                itemSaveDto.title,
+                itemSaveDto.board,
+            )
+        )
     }
 }

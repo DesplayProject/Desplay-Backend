@@ -1,11 +1,11 @@
-package com.deterior.domain.member.controller
+package com.deterior.controller
 
 import com.deterior.domain.member.dto.request.SignInRequest
 import com.deterior.domain.member.dto.request.SignUpRequest
 import com.deterior.domain.member.dto.response.SignUpResponse
 import com.deterior.domain.member.repository.MemberRepository
 import com.deterior.domain.member.service.MemberService
-import com.deterior.util.DatabaseCleanup
+import com.deterior.DatabaseCleanup
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe

@@ -5,5 +5,5 @@ import com.deterior.domain.item.dto.request.ItemSaveRequest
 import com.deterior.domain.item.dto.response.ItemSaveResponse
 
 interface ItemService {
-    fun saveItem(itemSaveDto: ItemSaveDto): ItemSaveResponse
+    fun saveItem(itemSaveDto: ItemSaveDto)
 }
