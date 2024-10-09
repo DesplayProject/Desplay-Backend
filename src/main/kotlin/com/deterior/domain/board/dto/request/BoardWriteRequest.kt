@@ -8,5 +8,5 @@ data class BoardWriteRequest(
     val content: String,
     val moodTypes: List<MoodType>,
     val files: List<MultipartFile>,
-    val items: List<String>
+    val items: List<Pair<String, String>>
 )

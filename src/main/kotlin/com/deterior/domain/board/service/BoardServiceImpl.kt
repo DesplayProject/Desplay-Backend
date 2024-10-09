@@ -20,4 +20,10 @@ class BoardServiceImpl @Autowired constructor(
         )
         return BoardDto.toDto(board)
     }
+
+    @Transactional
+    override fun findBoardById(id: Long): BoardDto {
+        val board = boardRepository.findById(id).orElseThrow { NoSuchElementException() }
+        return BoardDto.toDto(board)
+    }
 }

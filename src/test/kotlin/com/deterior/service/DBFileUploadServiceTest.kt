@@ -2,6 +2,7 @@ package com.deterior.service
 
 import com.deterior.DatabaseCleanup
 import com.deterior.domain.board.Board
+import com.deterior.domain.board.BoardDto
 import com.deterior.domain.board.MoodType
 import com.deterior.domain.board.repository.BoardRepository
 import com.deterior.domain.image.Image
@@ -36,21 +37,32 @@ class DBFileUploadServiceTest @Autowired constructor(
             content = "content",
             mutableListOf(MoodType.OFFICE, MoodType.CALM)
         )
-        boardRepository.save(board)
+        val result = boardRepository.save(board)
+        val boardDto = BoardDto(
+            boardId = result.id!!,
+            title = result.title,
+            content = result.content,
+            moodTypes = result.moodTypes,
+        )
         val fileUploadDto = FileUploadDto(
-            board = board,
             files = mutableListOf(
                 MockMultipartFile("file1", "file1.png", MediaType.IMAGE_PNG_VALUE, "file1".toByteArray()),
                 MockMultipartFile("file2", "file2.png", MediaType.IMAGE_PNG_VALUE, "file2".toByteArray()),
-            )
+            ),
+            boardDto = boardDto,
         )
         When("파일을 저장한다") {
-            dbFileUploadService.saveFile(fileUploadDto)
+            val results = dbFileUploadService.saveFile(fileUploadDto)
             Then("저장이 성공한다") {
-                val imageResult = imageRepository.findById(1).get()
-                val boardResult = imageResult.board
-                imageResult.originFileName shouldBe "file1.png"
-                boardResult.images shouldContain imageResult
+                var cnt = 1
+                for (file in results) {
+                    file.id shouldBe cnt
+                    file.originFileName shouldBe "file${cnt}.png"
+                    file.boardDto.boardId shouldBe result.id
+                    file.boardDto.title shouldBe result.title
+                    file.boardDto.content shouldBe result.content
+                    cnt++
+                }
             }
         }
     }

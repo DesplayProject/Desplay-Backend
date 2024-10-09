@@ -14,6 +14,8 @@ import jakarta.persistence.ManyToOne
 class Item(
     var title: String,
 
+    val link: String,
+
     @ManyToOne
     val board: Board
 ) : BaseEntity() {
