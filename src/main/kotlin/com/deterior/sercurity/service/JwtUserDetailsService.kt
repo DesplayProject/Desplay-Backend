@@ -29,12 +29,4 @@ class JwtUserDetailsService @Autowired constructor(
         val memberDto = MemberDto.toDto(member)
         return MemberContext(memberDto, roles)
     }
-
-    private fun Member.createUserDetails(): UserDetails {
-        return User.builder()
-            .username(this.username)
-            .password(this.password)
-            .roles(*this.roles.toTypedArray())
-            .build()
-    }
 }

@@ -4,6 +4,7 @@ import com.deterior.global.util.ApplicationProperties
 import com.deterior.global.util.LoggerCreator
 import com.deterior.sercurity.dto.JwtToken
 import com.deterior.sercurity.exception.NoAuthorizationInTokenException
+import com.deterior.sercurity.service.JwtUserDetailsService
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
@@ -21,7 +22,8 @@ import java.util.*
 @Slf4j
 @Component
 class JwtTokenProvider @Autowired constructor(
-    val applicationProperties: ApplicationProperties
+    val applicationProperties: ApplicationProperties,
+    val jwtUserDetailsService: JwtUserDetailsService
 ) {
     lateinit var key: Key
 
@@ -68,8 +70,8 @@ class JwtTokenProvider @Autowired constructor(
             .toString().split(",")
             .map { SimpleGrantedAuthority(it) }
             .toList()
-        val principal = User(claims.subject, "", authorities)
-        return UsernamePasswordAuthenticationToken(principal, "", authorities)
+        val user = jwtUserDetailsService.loadUserByUsername(claims.subject)
+        return UsernamePasswordAuthenticationToken(user, "", authorities)
     }
 
     fun validateToken(token: String): Boolean {
