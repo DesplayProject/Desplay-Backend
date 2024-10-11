@@ -1,7 +1,7 @@
 package com.deterior.domain.image
 
 import com.deterior.domain.board.Board
-import com.deterior.domain.board.BoardDto
+import com.deterior.domain.board.dto.BoardDto
 
 data class ImageDto(
     val id: Long,

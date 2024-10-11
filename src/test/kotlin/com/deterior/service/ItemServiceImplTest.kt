@@ -2,16 +2,17 @@ package com.deterior.service
 
 import com.deterior.DatabaseCleanup
 import com.deterior.domain.board.Board
-import com.deterior.domain.board.BoardDto
+import com.deterior.domain.board.dto.BoardDto
 import com.deterior.domain.board.MoodType
 import com.deterior.domain.board.repository.BoardRepository
-import com.deterior.domain.image.repository.ImageRepository
-import com.deterior.domain.image.service.DBFileUploadService
 import com.deterior.domain.item.dto.ItemSaveDto
 import com.deterior.domain.item.repository.ItemRepository
 import com.deterior.domain.item.service.ItemService
+import com.deterior.domain.member.Member
+import com.deterior.domain.member.repository.MemberRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.mockk
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
@@ -19,21 +20,27 @@ import org.springframework.boot.test.context.SpringBootTest
 class ItemServiceImplTest @Autowired constructor(
     private val databaseCleanup: DatabaseCleanup,
     private val boardRepository: BoardRepository,
-    private val itemRepository: ItemRepository,
-    private val itemService: ItemService
+    private val itemService: ItemService,
+    private val memberRepository: MemberRepository
 ) : BehaviorSpec({
-
-
 
     afterSpec {
         databaseCleanup.execute()
     }
 
     Given("Item을 저장하는 서비스가 있다") {
+        val member = Member(
+            username = "username",
+            password = "password",
+            email = "test@test.com",
+            roles = mutableListOf()
+        )
+        val saveMember = memberRepository.save(member)
         val board = Board(
             title = "title",
             content = "content",
-            mutableListOf(MoodType.OFFICE, MoodType.CALM)
+            mutableListOf(MoodType.OFFICE, MoodType.CALM),
+            member = saveMember
         )
         val result = boardRepository.save(board)
         val boardDto = BoardDto(
@@ -64,20 +71,5 @@ class ItemServiceImplTest @Autowired constructor(
                 }
             }
         }
-    }
-
-    fun saveBoard(): BoardDto {
-        val board = Board(
-            title = "title",
-            content = "content",
-            mutableListOf(MoodType.OFFICE, MoodType.CALM)
-        )
-        val result = boardRepository.save(board)
-        return BoardDto(
-            boardId = result.id!!,
-            title = result.title,
-            content = result.content,
-            moodTypes = result.moodTypes,
-        )
     }
 })

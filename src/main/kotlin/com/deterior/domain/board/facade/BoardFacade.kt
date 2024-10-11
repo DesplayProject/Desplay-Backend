@@ -1,7 +1,8 @@
-package com.deterior.global.facade
+package com.deterior.domain.board.facade
 
 import com.deterior.domain.board.dto.BoardSaveDto
-import com.deterior.domain.board.dto.request.BoardWriteRequest
+import com.deterior.domain.board.dto.BoardWriteDto
+import com.deterior.domain.board.dto.BoardWriteRequest
 import com.deterior.domain.board.service.BoardService
 import com.deterior.domain.image.dto.FileUploadDto
 import com.deterior.domain.image.service.FileUploadService
@@ -13,23 +14,23 @@ import org.springframework.stereotype.Component
 
 @Component
 class BoardFacade @Autowired constructor(
-    val boardService: BoardService,
-    val fileUploadService: FileUploadService,
-    val itemService: ItemService,
+    private val boardService: BoardService,
+    private val fileUploadService: FileUploadService,
+    private val itemService: ItemService,
 ) {
 
     @Transactional
-    fun writeBoard(boardWriteRequest: BoardWriteRequest) {
-        val boardDto = boardService.saveBoard(BoardSaveDto.toDto(boardWriteRequest))
+    fun writeBoard(boardWriteDto: BoardWriteDto) {
+        val boardDto = boardService.saveBoard(BoardSaveDto.toDto(boardWriteDto))
         fileUploadService.saveFile(
             FileUploadDto(
-                files = boardWriteRequest.files,
+                files = boardWriteDto.files,
                 boardDto = boardDto
             )
         )
         itemService.saveItem(
             ItemSaveDto(
-                items = boardWriteRequest.items,
+                items = boardWriteDto.items,
                 boardDto = boardDto
             )
         )

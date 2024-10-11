@@ -4,6 +4,7 @@ import com.deterior.domain.BaseEntity
 import com.deterior.domain.board.dto.BoardSaveDto
 import com.deterior.domain.image.Image
 import com.deterior.domain.item.Item
+import com.deterior.domain.member.Member
 import jakarta.persistence.*
 
 @Entity
@@ -14,6 +15,9 @@ class Board(
 
     @ElementCollection(fetch = FetchType.EAGER)
     val moodTypes: List<MoodType> = mutableListOf(),
+
+    @ManyToOne
+    val member: Member
 ) : BaseEntity() {
     @OneToMany(mappedBy = "board", cascade = [CascadeType.ALL], orphanRemoval = true)
     val items: MutableList<Item> = mutableListOf()
@@ -22,11 +26,12 @@ class Board(
     val images: MutableList<Image> = mutableListOf()
 
     companion object {
-        fun toEntity(boardSaveDto: BoardSaveDto): Board =
+        fun toEntity(boardSaveDto: BoardSaveDto, member: Member): Board =
             Board(
                 title = boardSaveDto.title,
                 content = boardSaveDto.content,
                 moodTypes = boardSaveDto.moodTypes,
+                member = member
             )
     }
 }

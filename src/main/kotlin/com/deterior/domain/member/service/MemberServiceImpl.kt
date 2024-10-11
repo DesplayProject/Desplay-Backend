@@ -1,9 +1,9 @@
 package com.deterior.domain.member.service
 
 import com.deterior.domain.member.Member
-import com.deterior.domain.member.dto.request.SignInRequest
-import com.deterior.domain.member.dto.request.SignUpRequest
-import com.deterior.domain.member.dto.response.SignUpResponse
+import com.deterior.domain.member.dto.SignInRequest
+import com.deterior.domain.member.dto.SignUpRequest
+import com.deterior.domain.member.dto.SignUpResponse
 import com.deterior.global.exception.DuplicateEmailException
 import com.deterior.global.exception.DuplicateUsernameException
 import com.deterior.domain.member.repository.MemberRepository
@@ -42,7 +42,10 @@ class MemberServiceImpl @Autowired constructor(
         }
         signUpRequest.password = passwordEncoder.encode(signUpRequest.password)
         val roles = mutableListOf("USER")
-        val member = Member.toEntity(request = signUpRequest, roles = roles)
+        val member = Member.toEntity(
+            request = signUpRequest,
+            roles = roles,
+        )
         memberRepository.save(member)
         return SignUpResponse.toResponse(member)
     }

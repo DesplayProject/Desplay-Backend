@@ -1,7 +1,7 @@
 package com.deterior.service
 
 import com.deterior.domain.member.Member
-import com.deterior.domain.member.dto.request.SignUpRequest
+import com.deterior.domain.member.dto.SignUpRequest
 import com.deterior.domain.member.repository.MemberRepository
 import com.deterior.domain.member.service.MemberService
 import com.deterior.global.exception.DuplicateEmailException

@@ -1,8 +1,8 @@
 package com.deterior.controller
 
-import com.deterior.domain.member.dto.request.SignInRequest
-import com.deterior.domain.member.dto.request.SignUpRequest
-import com.deterior.domain.member.dto.response.SignUpResponse
+import com.deterior.domain.member.dto.SignInRequest
+import com.deterior.domain.member.dto.SignUpRequest
+import com.deterior.domain.member.dto.SignUpResponse
 import com.deterior.domain.member.repository.MemberRepository
 import com.deterior.domain.member.service.MemberService
 import com.deterior.DatabaseCleanup

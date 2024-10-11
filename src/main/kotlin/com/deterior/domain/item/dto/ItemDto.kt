@@ -1,7 +1,8 @@
-package com.deterior.domain.item
+package com.deterior.domain.item.dto
 
 import com.deterior.domain.board.Board
-import com.deterior.domain.board.BoardDto
+import com.deterior.domain.board.dto.BoardDto
+import com.deterior.domain.item.Item
 
 data class ItemDto(
     val id: Long,

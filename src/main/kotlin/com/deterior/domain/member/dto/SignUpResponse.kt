@@ -1,4 +1,4 @@
-package com.deterior.domain.member.dto.response
+package com.deterior.domain.member.dto
 
 import com.deterior.domain.member.Member
 

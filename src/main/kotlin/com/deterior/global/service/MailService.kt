@@ -13,9 +13,9 @@ import kotlin.math.abs
 //cozq njji eles osma
 @Service
 class MailService @Autowired constructor(
-    val javaMailSender: JavaMailSender,
-    val mailCheckDao: MailCheckDao,
-    val applicationProperties: ApplicationProperties
+    private val javaMailSender: JavaMailSender,
+    private val mailCheckDao: MailCheckDao,
+    private val applicationProperties: ApplicationProperties
 ){
     fun sendMail(mailDto: MailDto) {
         val mailType = mailDto.type

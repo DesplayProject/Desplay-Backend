@@ -1,15 +1,13 @@
 package com.deterior.facade
 
-import com.deterior.DatabaseCleanup
-import com.deterior.domain.board.dto.request.BoardWriteRequest
+import com.deterior.domain.board.dto.BoardWriteDto
+import com.deterior.domain.board.dto.BoardWriteRequest
 import com.deterior.domain.board.service.BoardService
 import com.deterior.domain.image.service.FileUploadService
 import com.deterior.domain.item.service.ItemService
-import com.deterior.domain.item.service.ItemServiceImpl
-import com.deterior.global.facade.BoardFacade
+import com.deterior.domain.board.facade.BoardFacade
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.*
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
@@ -29,12 +27,13 @@ class BoardFacadeTest : BehaviorSpec({
         every { fileUploadService.saveFile(any()) } returns listOf()
         every { itemService.saveItem(any()) } returns listOf()
         When("facade를 호출한다") {
-            val request = BoardWriteRequest(
+            val request = BoardWriteDto(
                 title = "title",
                 content = "content",
                 moodTypes = listOf(),
                 files = listOf(),
-                items = listOf()
+                items = listOf(),
+                memberDto = mockk()
             )
             boardFacade.writeBoard(request)
             Then("service들이 호출된다") {

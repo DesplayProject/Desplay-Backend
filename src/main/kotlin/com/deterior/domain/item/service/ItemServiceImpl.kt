@@ -1,11 +1,9 @@
 package com.deterior.domain.item.service
 
 import com.deterior.domain.board.repository.BoardRepository
-import com.deterior.domain.board.service.BoardService
 import com.deterior.domain.item.Item
-import com.deterior.domain.item.ItemDto
+import com.deterior.domain.item.dto.ItemDto
 import com.deterior.domain.item.dto.ItemSaveDto
-import com.deterior.domain.item.dto.request.ItemSaveRequest
 import com.deterior.domain.item.repository.ItemRepository
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,9 +11,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class ItemServiceImpl @Autowired constructor(
-    val itemRepository: ItemRepository,
-    val boardRepository: BoardRepository,
-    val boardService: BoardService
+    private val itemRepository: ItemRepository,
+    private val boardRepository: BoardRepository,
 ) : ItemService {
     @Transactional
     override fun saveItem(itemSaveDto: ItemSaveDto): List<ItemDto> {
