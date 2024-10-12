@@ -1,6 +1,7 @@
 package com.deterior.domain.board
 
 import com.deterior.domain.BaseEntity
+import com.deterior.domain.board.dto.BoardDto
 import com.deterior.domain.board.dto.BoardSaveDto
 import com.deterior.domain.image.Image
 import com.deterior.domain.item.Item
@@ -25,13 +26,10 @@ class Board(
     @OneToMany(mappedBy = "board", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     val images: MutableList<Image> = mutableListOf()
 
-    companion object {
-        fun toEntity(boardSaveDto: BoardSaveDto, member: Member): Board =
-            Board(
-                title = boardSaveDto.title,
-                content = boardSaveDto.content,
-                moodTypes = boardSaveDto.moodTypes,
-                member = member
-            )
-    }
+    fun toDto(): BoardDto = BoardDto(
+        boardId = id!!,
+        title = title,
+        content = content,
+        moodTypes = moodTypes,
+    )
 }

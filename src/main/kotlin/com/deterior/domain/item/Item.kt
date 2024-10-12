@@ -2,6 +2,8 @@ package com.deterior.domain.item
 
 import com.deterior.domain.BaseEntity
 import com.deterior.domain.board.Board
+import com.deterior.domain.board.dto.BoardDto
+import com.deterior.domain.item.dto.ItemDto
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToOne
 
@@ -17,4 +19,11 @@ class Item(
     init {
         board.items.add(this)
     }
+
+    fun toDto(boardDto: BoardDto): ItemDto = ItemDto(
+        itemId = id!!,
+        title = title,
+        link = link,
+        boardDto = boardDto
+    )
 }

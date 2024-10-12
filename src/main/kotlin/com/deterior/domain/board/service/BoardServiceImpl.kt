@@ -18,9 +18,7 @@ class BoardServiceImpl @Autowired constructor(
     @Transactional
     override fun saveBoard(boardSaveDto: BoardSaveDto): BoardDto {
         val member = memberRepository.findById(boardSaveDto.memberDto.memberId).orElseThrow{ NoSuchElementException() }
-        val board = boardRepository.save(
-            Board.toEntity(boardSaveDto,member)
-        )
+        val board = boardRepository.save(boardSaveDto.toEntity(member))
         return BoardDto.toDto(board)
     }
 

@@ -1,6 +1,8 @@
 package com.deterior.domain.board.dto
 
+import com.deterior.domain.board.Board
 import com.deterior.domain.board.MoodType
+import com.deterior.domain.member.Member
 import com.deterior.domain.member.dto.MemberDto
 
 data class BoardSaveDto(
@@ -9,13 +11,10 @@ data class BoardSaveDto(
     val moodTypes: List<MoodType>,
     val memberDto: MemberDto
 ) {
-    companion object {
-        fun toDto(boardWriteDto: BoardWriteDto): BoardSaveDto =
-            BoardSaveDto(
-                title = boardWriteDto.title,
-                content = boardWriteDto.content,
-                moodTypes = boardWriteDto.moodTypes,
-                memberDto = boardWriteDto.memberDto
-            )
-    }
+    fun toEntity(member: Member): Board = Board(
+        title = title,
+        content = content,
+        moodTypes = moodTypes,
+        member = member
+    )
 }

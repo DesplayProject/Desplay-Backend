@@ -5,19 +5,16 @@ import com.deterior.domain.board.Board
 import com.deterior.domain.board.dto.BoardDto
 import com.deterior.domain.board.MoodType
 import com.deterior.domain.board.repository.BoardRepository
-import com.deterior.domain.image.dto.FileUploadDto
-import com.deterior.domain.image.repository.ImageRepository
+import com.deterior.domain.image.dto.FileSaveDto
 import com.deterior.domain.image.service.DBFileUploadService
 import com.deterior.domain.member.Member
 import com.deterior.domain.member.repository.MemberRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.mockk
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.transaction.reactive.TransactionalOperator
 
 @SpringBootTest
 class DBFileUploadServiceTest @Autowired constructor(
@@ -51,7 +48,7 @@ class DBFileUploadServiceTest @Autowired constructor(
         content = result.content,
         moodTypes = result.moodTypes,
     )
-    val fileUploadDto = FileUploadDto(
+    val fileSaveDto = FileSaveDto(
         files = mutableListOf(
             MockMultipartFile("file1", "file1.png", MediaType.IMAGE_PNG_VALUE, "file1".toByteArray()),
             MockMultipartFile("file2", "file2.png", MediaType.IMAGE_PNG_VALUE, "file2".toByteArray()),
@@ -61,11 +58,11 @@ class DBFileUploadServiceTest @Autowired constructor(
 
     Given("DB에 파일을 업로드하는 서비스가 있다") {
         When("파일을 저장한다") {
-            val results = dbFileUploadService.saveFile(fileUploadDto)
+            val results = dbFileUploadService.saveFile(fileSaveDto)
             Then("저장이 성공한다") {
                 var cnt = 1
                 for (file in results) {
-                    file.id shouldBe cnt
+                    file.imageId shouldBe cnt
                     file.originFileName shouldBe "file${cnt}.png"
                     file.boardDto.boardId shouldBe result.id
                     file.boardDto.title shouldBe result.title

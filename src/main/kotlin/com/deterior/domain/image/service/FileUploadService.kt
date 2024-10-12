@@ -1,8 +1,8 @@
 package com.deterior.domain.image.service
 
-import com.deterior.domain.image.ImageDto
-import com.deterior.domain.image.dto.FileUploadDto
+import com.deterior.domain.image.dto.ImageDto
+import com.deterior.domain.image.dto.FileSaveDto
 
 interface FileUploadService {
-    fun saveFile(fileUploadDto: FileUploadDto): List<ImageDto>
+    fun saveFile(fileSaveDto: FileSaveDto): List<ImageDto>
 }

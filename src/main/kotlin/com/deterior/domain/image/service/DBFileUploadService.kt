@@ -2,8 +2,8 @@ package com.deterior.domain.image.service
 
 import com.deterior.domain.board.repository.BoardRepository
 import com.deterior.domain.image.Image
-import com.deterior.domain.image.ImageDto
-import com.deterior.domain.image.dto.FileUploadDto
+import com.deterior.domain.image.dto.ImageDto
+import com.deterior.domain.image.dto.FileSaveDto
 import com.deterior.domain.image.repository.ImageRepository
 import com.deterior.global.util.ApplicationProperties
 import jakarta.transaction.Transactional
@@ -21,10 +21,10 @@ class DBFileUploadService @Autowired constructor(
 ) : FileUploadService{
 
     @Transactional
-    override fun saveFile(fileUploadDto: FileUploadDto): List<ImageDto> {
-        val board = boardRepository.findById(fileUploadDto.boardDto.boardId).orElseThrow{ NoSuchElementException() }
+    override fun saveFile(fileSaveDto: FileSaveDto): List<ImageDto> {
+        val board = boardRepository.findById(fileSaveDto.boardDto.boardId).orElseThrow{ NoSuchElementException() }
         val results = mutableListOf<ImageDto>()
-        for (image in fileUploadDto.files) {
+        for (image in fileSaveDto.files) {
             val originFileName: String? = image.originalFilename
             val saveFileName = createSaveFileName(originFileName)
             val filePath = getFilePath(saveFileName)
@@ -36,7 +36,7 @@ class DBFileUploadService @Autowired constructor(
                     board = board,
                 )
             )
-            results.add(ImageDto.toDto(savedImage, board))
+            results.add(savedImage.toDto(board.toDto()))
         }
         return results
     }

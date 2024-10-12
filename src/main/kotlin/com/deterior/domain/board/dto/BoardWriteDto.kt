@@ -1,6 +1,8 @@
 package com.deterior.domain.board.dto
 
 import com.deterior.domain.board.MoodType
+import com.deterior.domain.image.dto.FileSaveDto
+import com.deterior.domain.item.dto.ItemSaveDto
 import com.deterior.domain.member.dto.MemberDto
 import org.springframework.web.multipart.MultipartFile
 
@@ -12,15 +14,20 @@ data class BoardWriteDto(
     val items: List<Pair<String, String>>,
     val memberDto: MemberDto,
 ) {
-    companion object {
-        fun toDto(boardWriteRequest: BoardWriteRequest, files: List<MultipartFile>, memberDto: MemberDto): BoardWriteDto =
-            BoardWriteDto(
-                title = boardWriteRequest.title,
-                content = boardWriteRequest.content,
-                moodTypes = boardWriteRequest.moodTypes,
-                files = files,
-                items = boardWriteRequest.items,
-                memberDto = memberDto,
-            )
-    }
+    fun toBoardSaveDto(): BoardSaveDto = BoardSaveDto(
+        title = title,
+        content = content,
+        moodTypes = moodTypes,
+        memberDto = memberDto,
+    )
+
+    fun toFileSaveDto(boardDto: BoardDto): FileSaveDto = FileSaveDto(
+        files = files,
+        boardDto = boardDto,
+    )
+
+    fun toItemSaveDto(boardDto: BoardDto): ItemSaveDto = ItemSaveDto(
+        items = items,
+        boardDto = boardDto,
+    )
 }

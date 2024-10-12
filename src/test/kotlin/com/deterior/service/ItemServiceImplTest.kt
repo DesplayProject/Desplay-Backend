@@ -61,7 +61,7 @@ class ItemServiceImplTest @Autowired constructor(
             Then("저장이 성공한다") {
                 var cnt = 1
                 for (item in results) {
-                    item.id shouldBe cnt
+                    item.itemId shouldBe cnt
                     item.title shouldBe "item${cnt}"
                     item.link shouldBe "https://item${cnt}"
                     item.boardDto.boardId shouldBe result.id

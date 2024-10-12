@@ -22,8 +22,8 @@ import java.util.*
 @Slf4j
 @Component
 class JwtTokenProvider @Autowired constructor(
-    val applicationProperties: ApplicationProperties,
-    val jwtUserDetailsService: JwtUserDetailsService
+    private val applicationProperties: ApplicationProperties,
+    private val jwtUserDetailsService: JwtUserDetailsService
 ) {
     lateinit var key: Key
 
