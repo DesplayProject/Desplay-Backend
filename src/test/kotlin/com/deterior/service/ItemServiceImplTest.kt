@@ -49,15 +49,12 @@ class ItemServiceImplTest @Autowired constructor(
             content = result.content,
             moodTypes = result.moodTypes,
         )
-        val itemSaveDto = ItemSaveDto(
-            items = listOf(
-                Pair("item1", "https://item1"),
-                Pair("item2", "https://item2")
-            ),
-            boardDto = boardDto
+        val itemSaveDtos = listOf(
+            ItemSaveDto("item1", "https://item1", boardDto),
+            ItemSaveDto("item2", "https://item2", boardDto),
         )
         When("Item을 저장한다") {
-            val results = itemService.saveItem(itemSaveDto)
+            val results = itemService.saveItem(itemSaveDtos)
             Then("저장이 성공한다") {
                 var cnt = 1
                 for (item in results) {

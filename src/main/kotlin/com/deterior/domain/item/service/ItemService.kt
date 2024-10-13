@@ -4,5 +4,5 @@ import com.deterior.domain.item.dto.ItemDto
 import com.deterior.domain.item.dto.ItemSaveDto
 
 interface ItemService {
-    fun saveItem(itemSaveDto: ItemSaveDto): List<ItemDto>
+    fun saveItem(itemSaveDtos: List<ItemSaveDto>): List<ItemDto>
 }

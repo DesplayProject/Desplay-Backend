@@ -26,8 +26,16 @@ data class BoardWriteDto(
         boardDto = boardDto,
     )
 
-    fun toItemSaveDto(boardDto: BoardDto): ItemSaveDto = ItemSaveDto(
-        items = items,
-        boardDto = boardDto,
-    )
+    fun toItemSaveDto(boardDto: BoardDto): List<ItemSaveDto> {
+        val result = mutableListOf<ItemSaveDto>()
+        for (item in items) {
+            val itemSaveDto = ItemSaveDto(
+                title = item.first,
+                link = item.second,
+                boardDto = boardDto,
+            )
+            result.add(itemSaveDto)
+        }
+        return result
+    }
 }
