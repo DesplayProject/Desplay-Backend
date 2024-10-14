@@ -2,6 +2,7 @@ package com.deterior.global.exception.controller
 
 import com.deterior.global.exception.AuthenticationFailException
 import com.deterior.global.exception.DuplicateException
+import com.deterior.global.exception.JwtTokenException
 import com.deterior.global.exception.dto.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,5 +34,17 @@ class GlobalExceptionHandler {
             values = listOf(exception.value)
         )
         return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
+    }
+
+    @ExceptionHandler(JwtTokenException::class)
+    fun handleJwtTokenException(
+        exception: JwtTokenException
+    ): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse.toResponse(
+            status = HttpStatus.UNAUTHORIZED.value(),
+            errorCode = exception.errorCode,
+            values = listOf(exception.value)
+        )
+        return ResponseEntity(errorResponse, HttpStatus.FORBIDDEN)
     }
 }
