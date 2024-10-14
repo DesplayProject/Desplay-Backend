@@ -9,4 +9,7 @@ enum class ErrorCode(
     EMAIL_AUTH_FAIL("M-003", "Email authentication failed"),
 
     NO_SUCH_BOARD("B-001", "there is no such board"),
+
+    INCONSISTENT_TOKEN("T-001", "inconsistent token"),
+    INVALID_TOKEN("T-002", "invalid token"),
 }

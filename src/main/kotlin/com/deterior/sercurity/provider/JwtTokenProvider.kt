@@ -26,6 +26,9 @@ class JwtTokenProvider @Autowired constructor(
     private val jwtUserDetailsService: JwtUserDetailsService
 ) {
     lateinit var key: Key
+    val accessExpirationTime = applicationProperties.jwt.token.accessExpirationTime
+    val refreshExpirationTime = applicationProperties.jwt.token.refreshExpirationTime
+    val reissueTime = applicationProperties.jwt.token.reissueTime
 
     init {
         val secretKey: String = applicationProperties.jwt.secret
@@ -36,29 +39,37 @@ class JwtTokenProvider @Autowired constructor(
     companion object : LoggerCreator()
 
     fun generateToken(authentication: Authentication): JwtToken {
-        val authorities = authentication.authorities
-            .map { it.toString() }
-            .reduce{ result, new -> "$result,$new" }
-        val now: Long = Date.from(Instant.now()).time
-        val expireTime = Date(now + 86400000)
-
         //jwt 쿠키에 저장되는 노출도가 높은 정보이므로 payload에는 민감한 개인정보대신 권한정보를 넣는다.
-        val accessToken = Jwts.builder()
-            .setSubject(authentication.name)
-            .claim("auth", authorities)
-            .setExpiration(expireTime)
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact()
-        val refreshToken = Jwts.builder()
-            .setExpiration(expireTime)
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact()
-
+        val accessToken = createAccessToken(authentication)
+        val refreshToken = createRefreshToken()
         return JwtToken(
             grantType = "Bearer",
             accessToken = accessToken,
             refreshToken = refreshToken
         )
+    }
+
+    private fun createAccessToken(authentication: Authentication): String {
+        val authorities = authentication.authorities
+            .map { it.toString() }
+            .reduce{ result, new -> "$result,$new" }
+        val now: Long = Date.from(Instant.now()).time
+        val expireTime = Date(now + accessExpirationTime)
+        return Jwts.builder()
+            .setSubject(authentication.name)
+            .claim("auth", authorities)
+            .setExpiration(expireTime)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact()
+    }
+
+    private fun createRefreshToken(): String {
+        val now: Long = Date.from(Instant.now()).time
+        val expireTime = Date(now + refreshExpirationTime)
+        return Jwts.builder()
+            .setExpiration(expireTime)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact()
     }
 
     fun authenticate(accessToken: String): Authentication {
@@ -89,6 +100,20 @@ class JwtTokenProvider @Autowired constructor(
             log.warn("Unsupported JWT Token", exception)
         } catch (exception: IllegalArgumentException) {
             log.warn("Empty JWT Token", exception)
+        }
+        return false
+    }
+
+    fun isReissueRefreshToken(token: String): Boolean {
+        val jws = Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+        val now: Long = Date.from(Instant.now()).time
+        val expireTime = jws.body.expiration.time
+        val refreshTime = Date(now + refreshExpirationTime).time
+        if (refreshTime - expireTime > reissueTime) {
+            return true
         }
         return false
     }

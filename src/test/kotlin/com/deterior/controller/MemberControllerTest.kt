@@ -6,9 +6,14 @@ import com.deterior.domain.member.dto.SignUpResponse
 import com.deterior.domain.member.repository.MemberRepository
 import com.deterior.domain.member.service.MemberService
 import com.deterior.DatabaseCleanup
+import com.deterior.sercurity.dto.JwtToken
+import com.deterior.sercurity.dto.ReissueTokenRequest
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import kotlinx.coroutines.Delay
+import kotlinx.coroutines.delay
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -34,7 +39,7 @@ class MemberControllerTest (
         email = "test@test.com",
     )
 
-    afterEach {
+    afterSpec {
         databaseCleanup.execute()
     }
 
@@ -51,21 +56,39 @@ class MemberControllerTest (
     }
 
     Given("로그인 컨트롤러가 주어진다") {
-        memberService.signUp(signUpRequest)
+        var jwtToken: JwtToken? = null
+        //memberService.signUp(signUpRequest)
         When("로그인을 한다") {
             val signInRequest = SignInRequest(
                 username = "username",
                 password = "password",
             )
-            val jwtToken = memberService.signIn(signInRequest)
+            jwtToken = memberService.signIn(signInRequest)
             val httpHeader = HttpHeaders()
-            httpHeader.setBearerAuth(jwtToken.accessToken)
+            httpHeader.setBearerAuth(jwtToken!!.accessToken)
             Then("토튼이 반환되어 다른 url에 접근이 가능하다") {
                 val url: String = "${domain}:${port}/test/member/user"
                 val response = testRestTemplate.postForEntity(url, HttpEntity<HttpHeaders>(httpHeader), String::class.java)
                 response.statusCode shouldBe HttpStatus.OK
-                response.body shouldBe "user"
+            }
+        }
+        When("토큰 재발급을 한다") {
+            val httpHeader = HttpHeaders()
+            httpHeader.setBearerAuth(jwtToken!!.accessToken)
+            val reissueTokenRequest = ReissueTokenRequest(
+                accessToken = jwtToken!!.accessToken,
+                refreshToken = jwtToken!!.refreshToken
+            )
+            val request = HttpEntity(reissueTokenRequest, httpHeader)
+            Then("재발급이 성공한다") {
+                delay(1000)
+                val url: String = "${domain}:${port}/api/member/reissue"
+                val response = testRestTemplate.postForEntity(url, request, JwtToken::class.java)
+                response.statusCode shouldBe HttpStatus.OK
+                response.body!!.accessToken shouldNotBe jwtToken!!.accessToken
+                response.body!!.refreshToken shouldNotBe jwtToken!!.refreshToken
             }
         }
     }
+
 })

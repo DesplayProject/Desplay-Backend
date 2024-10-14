@@ -1,4 +1,4 @@
-package com.deterior.global.dto.request
+package com.deterior.global.dto
 
 data class MailCheckRequest(
     val receiverMail: String,

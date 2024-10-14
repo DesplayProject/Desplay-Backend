@@ -1,5 +1,6 @@
 package com.deterior.domain.member.controller
 
+import com.deterior.sercurity.dto.ReissueTokenRequest
 import com.deterior.domain.member.dto.SignInRequest
 import com.deterior.domain.member.dto.SignUpRequest
 import com.deterior.domain.member.dto.SignUpResponse
@@ -29,5 +30,13 @@ class MemberController @Autowired constructor(
     ): ResponseEntity<SignUpResponse> {
         val signUpResponse = memberService.signUp(signUpRequest)
         return ResponseEntity.ok(signUpResponse)
+    }
+
+    @PostMapping("/api/member/reissue")
+    fun reissueToken(
+        @RequestBody reissueTokenRequest: ReissueTokenRequest
+    ): ResponseEntity<JwtToken> {
+        val jwtToken = memberService.reissue(reissueTokenRequest)
+        return ResponseEntity.ok(jwtToken)
     }
 }

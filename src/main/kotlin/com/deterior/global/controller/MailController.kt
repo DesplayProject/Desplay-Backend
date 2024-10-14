@@ -1,10 +1,10 @@
 package com.deterior.global.controller
 
 import com.deterior.global.dto.*
-import com.deterior.global.dto.request.MailCheckRequest
-import com.deterior.global.dto.request.MailSendRequest
-import com.deterior.global.dto.response.MailCheckResponse
-import com.deterior.global.dto.response.MailSendResponse
+import com.deterior.global.dto.MailCheckRequest
+import com.deterior.global.dto.MailSendRequest
+import com.deterior.global.dto.MailCheckResponse
+import com.deterior.global.dto.MailSendResponse
 import com.deterior.global.repository.MailCheckDao
 import com.deterior.global.service.MailService
 import com.deterior.global.service.MailType

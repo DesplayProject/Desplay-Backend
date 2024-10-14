@@ -1,4 +1,4 @@
-package com.deterior.global.dto.response
+package com.deterior.global.dto
 
 data class MailSendResponse(
     val receiverMail: String,
