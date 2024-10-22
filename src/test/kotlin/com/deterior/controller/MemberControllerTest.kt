@@ -6,6 +6,7 @@ import com.deterior.domain.member.dto.SignUpResponse
 import com.deterior.domain.member.repository.MemberRepository
 import com.deterior.domain.member.service.MemberService
 import com.deterior.DatabaseCleanup
+import com.deterior.global.util.ApplicationProperties
 import com.deterior.sercurity.dto.JwtToken
 import com.deterior.sercurity.dto.ReissueTokenRequest
 import io.kotest.core.spec.style.BehaviorSpec

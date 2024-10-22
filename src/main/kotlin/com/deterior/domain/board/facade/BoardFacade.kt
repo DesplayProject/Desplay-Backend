@@ -1,6 +1,7 @@
 package com.deterior.domain.board.facade
 
 import com.deterior.domain.board.dto.BoardWriteDto
+import com.deterior.domain.board.dto.BoardWriteResponse
 import com.deterior.domain.board.service.BoardService
 import com.deterior.domain.image.dto.FileSaveDto
 import com.deterior.domain.image.service.FileUploadService
@@ -16,11 +17,16 @@ class BoardFacade @Autowired constructor(
     private val fileUploadService: FileUploadService,
     private val itemService: ItemService,
 ) {
-
     @Transactional
-    fun writeBoard(boardWriteDto: BoardWriteDto) {
+    fun writeBoard(boardWriteDto: BoardWriteDto): BoardWriteResponse {
         val boardDto = boardService.saveBoard(boardWriteDto.toBoardSaveDto())
-        fileUploadService.saveFile(boardWriteDto.toFileSaveDto(boardDto))
-        itemService.saveItem(boardWriteDto.toItemSaveDto(boardDto))
+        val saveFiles = fileUploadService.saveFile(boardWriteDto.toFileSaveDto(boardDto))
+        val saveItems = itemService.saveItem(boardWriteDto.toItemSaveDto(boardDto))
+        return BoardWriteResponse(
+            memberDto = boardWriteDto.memberDto,
+            title = boardWriteDto.title,
+            itemSize = saveItems.size,
+            fileSize = saveFiles.size,
+        )
     }
 }

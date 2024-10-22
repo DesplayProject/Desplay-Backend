@@ -12,7 +12,6 @@ data class BoardWriteRequest(
 ) {
     fun toWriteDto(
         files: List<MultipartFile>,
-        items: List<Pair<String, String>>,
         memberContext: MemberContext
     ): BoardWriteDto = BoardWriteDto(
         title = title,
