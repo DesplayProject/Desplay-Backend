@@ -1,6 +1,7 @@
 package com.deterior.domain.member
 
 import com.deterior.domain.BaseEntity
+import com.deterior.domain.member.dto.MemberDto
 import com.deterior.domain.member.dto.SignUpRequest
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
@@ -18,6 +19,15 @@ class Member (
     @ElementCollection(fetch = FetchType.EAGER)
     var roles: MutableList<String> = mutableListOf()
 ) : BaseEntity() {
+
+    fun toDto(): MemberDto = MemberDto(
+        memberId = id!!,
+        username = username,
+        password = password,
+        email = email,
+        roles = roles
+    )
+
     companion object {
         fun toEntity(request: SignUpRequest, roles: MutableList<String>): Member =
             Member(

@@ -8,15 +8,4 @@ data class MemberDto(
     val password: String,
     val email: String,
     val roles: List<String>
-) {
-    companion object {
-        fun toDto(member: Member): MemberDto =
-            MemberDto(
-                memberId = member.id!!,
-                username = member.username,
-                password = member.password,
-                email = member.email,
-                roles = member.roles
-            )
-    }
-}
+)

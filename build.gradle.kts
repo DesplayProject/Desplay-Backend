@@ -27,6 +27,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.projectlombok:lombok")
 
+    //jackson
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
+
     //orm
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
@@ -48,6 +51,7 @@ dependencies {
 
     //redis
     implementation ("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
 
     //gson
     implementation("com.google.code.gson:gson:2.9.0")

@@ -4,6 +4,9 @@ import com.deterior.domain.board.Board
 import com.deterior.domain.board.MoodType
 import com.deterior.domain.member.Member
 import com.deterior.domain.member.dto.MemberDto
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+import lombok.NoArgsConstructor
 
 data class BoardDto(
     val boardId: Long,

@@ -26,7 +26,7 @@ class JwtUserDetailsService @Autowired constructor(
         val roles: MutableList<GrantedAuthority> = member.roles
             .map { SimpleGrantedAuthority(it) }
             .toMutableList()
-        val memberDto = MemberDto.toDto(member)
+        val memberDto = member.toDto()
         return MemberContext(memberDto, roles)
     }
 }
