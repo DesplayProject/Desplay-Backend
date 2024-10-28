@@ -19,6 +19,7 @@ class BoardServiceImpl @Autowired constructor(
     private val objectSerializer: ObjectSerializer
 ) : BoardService {
 
+    //@CachePut(cacheNames = ["board"], key = "#result.boardId")
     @Transactional
     override fun saveBoard(boardSaveDto: BoardSaveDto): BoardDto {
         val member = memberRepository.findById(boardSaveDto.memberDto.memberId).orElseThrow{ NoSuchElementException() }
@@ -29,6 +30,7 @@ class BoardServiceImpl @Autowired constructor(
         return result
     }
 
+    //@Cacheable(cacheNames = ["board"], key = "#id")
     @Transactional
     override fun findBoardById(id: Long): BoardDto {
         val key = "board::${id}"

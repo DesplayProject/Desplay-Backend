@@ -7,6 +7,7 @@ import com.deterior.domain.member.Member
 import com.deterior.domain.member.repository.MemberRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
@@ -14,7 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest
 class BoardServiceImplTest @Autowired constructor(
     private val boardService: BoardService,
     private val databaseCleanup: DatabaseCleanup,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val entityManager: EntityManager,
 ) : BehaviorSpec({
 
     afterSpec {

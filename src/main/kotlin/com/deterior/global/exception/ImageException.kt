@@ -1,19 +1,19 @@
 package com.deterior.global.exception
 
-open class JwtTokenException(
+open class ImageException(
     override val message: String,
     override val value: String,
     override val errorCode: ErrorCode
 ) : DesplayApplicationException(message = message, value = value, errorCode = errorCode)
 
-class InConsistentJwtTokenException(
+class ImageNotSupportedTypeException(
     override val message: String,
     override val value: String,
     override val errorCode: ErrorCode
-) : JwtTokenException(message = message, value = value, errorCode = errorCode)
+) : ImageException(message = message, value = value, errorCode = errorCode)
 
-class InvalidJwtTokenException(
+class ImageExceedCapacityException(
     override val message: String,
     override val value: String,
     override val errorCode: ErrorCode
-) : JwtTokenException(message = message, value = value, errorCode = errorCode)
+) : ImageException(message = message, value = value, errorCode = errorCode)

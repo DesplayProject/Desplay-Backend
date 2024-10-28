@@ -9,6 +9,8 @@ import com.deterior.domain.image.dto.FileSaveDto
 import com.deterior.domain.image.service.DBFileUploadService
 import com.deterior.domain.member.Member
 import com.deterior.domain.member.repository.MemberRepository
+import com.deterior.global.exception.ImageNotSupportedTypeException
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
@@ -69,6 +71,17 @@ class DBFileUploadServiceTest @Autowired constructor(
                     file.boardDto.content shouldBe result.content
                     cnt++
                 }
+            }
+        }
+        When("지원하지 않는 타입으로 저장한다") {
+            val save = FileSaveDto(
+                files = mutableListOf(
+                    MockMultipartFile("file1", "file1.txt", MediaType.IMAGE_PNG_VALUE, "file1".toByteArray())
+                ),
+                boardDto = boardDto,
+            )
+            Then("저장이 실패한다") {
+                shouldThrow<ImageNotSupportedTypeException> { dbFileUploadService.saveFile(save) }
             }
         }
     }
