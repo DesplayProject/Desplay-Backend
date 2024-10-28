@@ -20,7 +20,7 @@ class Board(
     @ManyToOne
     val member: Member
 ) : BaseEntity() {
-    @OneToMany(mappedBy = "board", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     val items: MutableList<Item> = mutableListOf()
 
     @OneToMany(mappedBy = "board", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)

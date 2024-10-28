@@ -5,6 +5,8 @@ import com.deterior.domain.image.Image
 import com.deterior.domain.image.dto.ImageDto
 import com.deterior.domain.image.dto.FileSaveDto
 import com.deterior.domain.image.repository.ImageRepository
+import com.deterior.global.exception.ErrorCode
+import com.deterior.global.exception.ImageNotSupportedTypeException
 import com.deterior.global.util.ApplicationProperties
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,7 +51,15 @@ class DBFileUploadService @Autowired constructor(
 
     private fun extractExt(fileName: String?): String? {
         val idx = fileName?.lastIndexOf('.')
-        return fileName?.substring(idx?.plus(1) as Int)
+        fileName?.substring(idx?.plus(1) as Int)
+            .let {
+                if (it == "jpg" || it == "png" || it == "jpeg") return it
+                else throw ImageNotSupportedTypeException(
+                message = ErrorCode.NOT_SUPPORTED_TYPE.message,
+                value = it!!,
+                errorCode = ErrorCode.NOT_SUPPORTED_TYPE
+            )
+            }
     }
 
     private fun getFilePath(fileName: String?): String {
