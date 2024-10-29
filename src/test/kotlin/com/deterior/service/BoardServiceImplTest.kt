@@ -1,6 +1,7 @@
 package com.deterior.service
 
 import com.deterior.DatabaseCleanup
+import com.deterior.domain.board.MoodType
 import com.deterior.domain.board.dto.BoardSaveDto
 import com.deterior.domain.board.service.BoardService
 import com.deterior.domain.member.Member
@@ -35,7 +36,7 @@ class BoardServiceImplTest @Autowired constructor(
         val boardSaveDto = BoardSaveDto(
             title = "title",
             content = "content",
-            moodTypes = listOf(),
+            moodTypes = listOf(MoodType.CALM, MoodType.NEAT),
             memberDto = memberDto
         )
         When("Board를 저장한다") {
