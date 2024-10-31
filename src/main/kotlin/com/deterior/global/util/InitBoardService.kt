@@ -16,19 +16,28 @@ class InitBoardService @Autowired constructor(
 ) {
     @Transactional
     fun init() {
-        val member = Member(
-            username = "username",
-            password = "password",
-            email = "email",
-            roles = mutableListOf()
-        )
-        entityManager.persist(member)
-        val boards = fillBoards(member)
+        val members = fillMembers()
+        val boards = fillBoards(members)
         fillItems(boards)
         fillImages(boards)
     }
 
-    private fun fillBoards(member: Member): MutableList<Board> {
+    private fun fillMembers(): MutableList<Member> {
+        val members = mutableListOf<Member>()
+        for (i in 0..9) {
+            val member = Member(
+                username = "username$i",
+                password = "password$i",
+                email = "email$i",
+                roles = mutableListOf()
+            )
+            entityManager.persist(member)
+            members.add(member)
+        }
+        return members
+    }
+
+    private fun fillBoards(members: List<Member>): MutableList<Board> {
         val boards = mutableListOf<Board>()
         val moodTypes = mutableListOf(MoodType.NEAT, MoodType.CALM, MoodType.OFFICE, MoodType.FANCY, MoodType.GAMING)
         for (i in 0..49) {
@@ -36,7 +45,7 @@ class InitBoardService @Autowired constructor(
                 title = "title$i",
                 content = "content$i",
                 moodTypes = mutableListOf(moodTypes[i % 5], moodTypes[(i + 1) % 5]),
-                member = member
+                member = members[i / 5]
             )
             entityManager.persist(board)
             boards.add(board)
