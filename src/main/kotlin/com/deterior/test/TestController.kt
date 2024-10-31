@@ -31,9 +31,9 @@ class TestController @Autowired constructor(
     val boardRepository: BoardRepository,
     val autoCompleteService: AutoCompleteService
 ) {
-    init {
-        initBoardService.init()
-    }
+//    init {
+//        initBoardService.init()
+//    }
     @PostMapping("/member/user")
     fun memberUser(@AuthenticationPrincipal memberContext: MemberContext): String {
         return "${memberContext.username}, ${memberContext.password}, ${memberContext.memberDto}"

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.ZSetOperations
+import java.time.LocalDateTime
 import kotlin.test.AfterTest
 
 @SpringBootTest
@@ -20,7 +21,7 @@ class AutoCompleteServiceTest @Autowired constructor(
 
     val limit = applicationProperties.autoComplete.limit
 
-    @AfterTest
+    @AfterEach
     fun clean() {
         redisTemplate.delete("autoComplete")
     }
@@ -38,24 +39,51 @@ class AutoCompleteServiceTest @Autowired constructor(
     fun `단어에 가중치 업데이트`() {
         val keyword = "가"
         val zSetOperations = redisTemplate.opsForZSet()
-        zSetOperations.add("autoComplete", "가", -100.0)
+        zSetOperations.add("autoComplete", "가", Int.MIN_VALUE.toDouble())
         zSetOperations.add("autoComplete", "가나*", 0.0)
         zSetOperations.add("autoComplete", "가다*", 0.0)
         var autoCompletes = findKeywords(keyword, zSetOperations)
-        println(autoCompletes)
         autoCompletes[0] shouldBe "가나"
         autoCompletes[1] shouldBe "가다"
 
-        zSetOperations.add("autoComplete", "가다*", -1.0)
+        val score = zSetOperations.score("autoComplete", "가다*")
+        zSetOperations.add("autoComplete", "가다*", (score!!-1))
         autoCompletes = findKeywords(keyword, zSetOperations)
         autoCompletes[0] shouldBe "가다"
         autoCompletes[1] shouldBe "가나"
     }
 
+    @Test
+    fun `자료 구조에 단어 저장`() {
+        val input = "자연은맛있다튀기지않고바람으로말린생라면"
+        val zSetOperations = redisTemplate.opsForZSet()
+        saveZSet(input, zSetOperations)
+        println(zSetOperations.score("autoComplete", "$input*"))
+        saveZSet(input, zSetOperations)
+        println(zSetOperations.score("autoComplete", "$input*"))
+        saveZSet(input, zSetOperations)
+        println(zSetOperations.score("autoComplete", "$input*"))
+    }
+
+    private fun saveZSet(input: String, zSetOperations: ZSetOperations<String, String>) {
+        var str = ""
+        val score = zSetOperations.score("autoComplete", "$input*")
+        if (score == null) {
+            for (s in input) {
+                str+=s
+                if (str.length == input.length) str+="*"
+                zSetOperations.add("autoComplete", str, 0.0)
+            }
+        } else {
+            zSetOperations.add("autoComplete", "$input*", score-1)
+        }
+
+    }
+
     private fun findKeywords(keyword: String, zSetOperations: ZSetOperations<String, String>): List<String> {
         var autoCompletes = emptyList<String>()
         zSetOperations.rank("autoComplete", keyword)?.let {
-            val list = zSetOperations.range("autoComplete", it, it + 1000) as Set<String>
+            val list = zSetOperations.range("autoComplete", it , it + 1000) as Set<String>
             autoCompletes = list.stream()
                 .filter { it -> it.startsWith(keyword) && it.endsWith("*") }
                 .map { it -> it.removeSuffix("*") }
