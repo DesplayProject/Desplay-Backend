@@ -26,10 +26,13 @@ class Board(
     @OneToMany(mappedBy = "board", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     val images: MutableList<Image> = mutableListOf()
 
+    var scrapCount: Long = 0
+
     fun toDto(): BoardDto = BoardDto(
         boardId = id!!,
         title = title,
         content = content,
         moodTypes = moodTypes,
+        scrapCount = scrapCount,
     )
 }

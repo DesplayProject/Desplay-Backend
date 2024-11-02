@@ -52,6 +52,7 @@ class ItemServiceImplTest @Autowired constructor(
             title = result.title,
             content = result.content,
             moodTypes = result.moodTypes,
+            scrapCount = result.scrapCount,
         )
         val itemSaveDtos = listOf(
             ItemSaveDto("item1", "https://item1", boardDto),

@@ -2,14 +2,16 @@ package com.deterior.domain.board.repository
 
 import com.deterior.domain.board.MoodType
 import com.deterior.domain.board.QBoard.*
+import com.deterior.domain.board.dto.BoardFindDto
 import com.deterior.domain.board.dto.BoardSearchCondition
-import com.deterior.domain.board.dto.BoardMainFindDto
-import com.deterior.domain.board.dto.BoardMemberFindDto
+import com.deterior.domain.board.repository.SortType.*
 import com.deterior.domain.image.dto.ImageFindDto
 import com.deterior.domain.item.QItem.*
 import com.deterior.domain.item.dto.ItemFindDto
 import com.deterior.domain.member.QMember
 import com.deterior.domain.member.QMember.member
+import com.querydsl.core.types.Order
+import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,35 +25,8 @@ import org.springframework.util.StringUtils.*
 class BoardRepositoryImpl @Autowired constructor(
     private val jpaQueryFactory: JPAQueryFactory
 ) : BoardSearchRepository {
-    override fun mainBoardSearch(condition: BoardSearchCondition?, pageable: Pageable): Page<BoardMainFindDto> {
-        val queryResult = jpaQueryFactory
-            .selectFrom(board)
-            .join(item).on(board.id.eq(item.board.id))
-            .where(
-                containTitle(condition!!.keyword)?.or(
-                    containItem(condition.keyword)
-                ),
-                containMoodType(condition.moodTypes),
-            )
-            .groupBy(board.id)
-            .offset(pageable.offset)
-            .limit(pageable.pageSize.toLong())
-            .orderBy(board.createTime.asc())
-            .fetch()
-        val content = queryResult
-            .map { it ->
-                BoardMainFindDto(
-                    boardId = it.id!!,
-                    images = it.images.map { it ->
-                        ImageFindDto(
-                            imageId = it.id!!,
-                            saveFileName = it.saveFileName
-                        ) }
-                ) }
-        return PageImpl(content, pageable, content.size.toLong())
-    }
-
-    override fun memberBoardSearch(condition: BoardSearchCondition?, pageable: Pageable): Page<BoardMemberFindDto> {
+    override fun boardSearch(condition: BoardSearchCondition?, pageable: Pageable): Page<BoardFindDto> {
+        val order = getOrder(condition)
         val queryResult = jpaQueryFactory
             .selectFrom(board)
             .join(member).on(board.member.id.eq(member.id))
@@ -66,15 +41,16 @@ class BoardRepositoryImpl @Autowired constructor(
             .groupBy(board.id)
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
-            .orderBy(board.createTime.asc())
+            .orderBy(*order.toTypedArray())
             .fetch()
         val content = queryResult
             .map { it ->
-                BoardMemberFindDto(
+                BoardFindDto(
                     boardId = it.id!!,
                     title = it.title,
                     moodTypes = it.moodTypes,
                     username = it.member.username,
+                    scrapCount = it.scrapCount,
                     items = it.items.map { it -> ItemFindDto(
                         itemId = it.id!!,
                         title = it.title,
@@ -87,6 +63,20 @@ class BoardRepositoryImpl @Autowired constructor(
                 )
             }
         return PageImpl(content, pageable, content.size.toLong())
+    }
+
+    private fun getOrder(condition: BoardSearchCondition?): List<OrderSpecifier<*>> {
+        val result = mutableListOf<OrderSpecifier<*>>()
+        if (condition!!.sortTypes == null) return emptyList()
+        for (sort in condition.sortTypes!!) {
+            when (sort) {
+                DATE_ASC -> result.add(OrderSpecifier(Order.ASC, board.createTime))
+                DATE_DESC -> result.add(OrderSpecifier(Order.DESC, board.createTime))
+                LIKE_ASC -> result.add(OrderSpecifier(Order.ASC, board.scrapCount))
+                LIKE_DESC -> result.add(OrderSpecifier(Order.DESC, board.scrapCount))
+            }
+        }
+        return result
     }
 
     private fun containMember(username: String?): BooleanExpression? = if (hasText(username)) member.username.eq(username) else null

@@ -15,6 +15,10 @@ class Scrap(
     @ManyToOne
     val board: Board,
 ) : BaseEntity() {
+    init {
+        board.scrapCount++
+    }
+
     fun toDto() = ScrapDto(
         memberDto = member.toDto(),
         boardDto = board.toDto(),

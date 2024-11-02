@@ -13,6 +13,7 @@ data class BoardDto(
     val title: String,
     val content: String,
     val moodTypes: List<MoodType>,
+    val scrapCount: Long
 ) {
     companion object {
         fun toDto(board: Board): BoardDto =
@@ -21,6 +22,7 @@ data class BoardDto(
                 title = board.title,
                 content = board.content,
                 moodTypes = board.moodTypes,
+                scrapCount = board.scrapCount
             )
     }
 }

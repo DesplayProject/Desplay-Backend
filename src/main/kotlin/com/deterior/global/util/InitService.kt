@@ -5,19 +5,21 @@ import com.deterior.domain.board.MoodType
 import com.deterior.domain.image.Image
 import com.deterior.domain.item.Item
 import com.deterior.domain.member.Member
+import com.deterior.domain.scrap.Scrap
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class InitBoardService @Autowired constructor(
+class InitService @Autowired constructor(
     private val entityManager: EntityManager
 ) {
     @Transactional
     fun init() {
         val members = fillMembers()
         val boards = fillBoards(members)
+        fillScraps(members, boards)
         fillItems(boards)
         fillImages(boards)
     }
@@ -35,6 +37,19 @@ class InitBoardService @Autowired constructor(
             members.add(member)
         }
         return members
+    }
+
+    private fun fillScraps(members: MutableList<Member>, boards: MutableList<Board>): List<Scrap> {
+        val scraps = mutableListOf<Scrap>()
+        for (i in 0..19) {
+            val scrap = Scrap(
+                member = members[i / 2],
+                board = boards[i / 2],
+            )
+            entityManager.persist(scrap)
+            scraps.add(scrap)
+        }
+        return scraps
     }
 
     private fun fillBoards(members: List<Member>): MutableList<Board> {

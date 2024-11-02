@@ -1,6 +1,8 @@
 package com.deterior.repository
 
 import com.deterior.DatabaseCleanup
+import com.deterior.domain.board.Board
+import com.deterior.domain.board.MoodType
 import com.deterior.domain.board.QBoard
 import com.deterior.domain.board.QBoard.*
 import com.deterior.domain.board.dto.BoardFindDto
@@ -9,8 +11,14 @@ import com.deterior.domain.image.dto.ImageFindDto
 import com.deterior.domain.item.QItem
 import com.deterior.domain.item.QItem.*
 import com.deterior.domain.item.dto.ItemFindDto
+import com.deterior.domain.member.Member
 import com.deterior.domain.member.QMember
 import com.deterior.domain.member.QMember.*
+import com.deterior.domain.member.repository.MemberRepository
+import com.deterior.domain.scrap.QScrap
+import com.deterior.domain.scrap.QScrap.*
+import com.deterior.domain.scrap.Scrap
+import com.deterior.domain.scrap.repository.ScrapRepository
 import com.querydsl.core.group.GroupBy
 import com.querydsl.core.group.GroupBy.*
 import com.querydsl.core.types.Projections
@@ -30,7 +38,9 @@ import javax.annotation.meta.When
 class BoardRepositoryImplTest @Autowired constructor(
     val boardRepository: BoardRepository,
     val databaseCleanup: DatabaseCleanup,
-    val jpaQueryFactory: JPAQueryFactory
+    val jpaQueryFactory: JPAQueryFactory,
+    val scrapRepository: ScrapRepository,
+    val memberRepository: MemberRepository,
 ) : AnnotationSpec() {
 
     @AfterEach
@@ -56,6 +66,7 @@ class BoardRepositoryImplTest @Autowired constructor(
                 title = it.title,
                 moodTypes = it.moodTypes,
                 username = it.member.username,
+                scrapCount = it.scrapCount,
                 items = it.items.map { it -> ItemFindDto(
                     itemId = it.id!!,
                     title = it.title,
@@ -70,7 +81,87 @@ class BoardRepositoryImplTest @Autowired constructor(
             val isContain = v.items
                 .any { it.title.contains(keyword) }
             isContain shouldBe true
-            println(v)
+            //println(v)
         }
+    }
+
+    @Test
+    @Transactional
+    fun `좋아요한 게시물 조회`() {
+        val members = fillMembers()
+        val boards = fillBoards(members)
+        fillScraps(members, boards)
+        val userId: Long = 1
+        val result = jpaQueryFactory
+            .selectFrom(scrap)
+            .where(scrap.member.id.eq(userId))
+            .offset(0)
+            .limit(50)
+            .fetch()
+        val find = result
+            .map { it -> BoardFindDto(
+                boardId = it.board.id!!,
+                title = it.board.title,
+                moodTypes = it.board.moodTypes,
+                username = it.member.username,
+                scrapCount = it.board.scrapCount,
+                items = it.board.items.map { it -> ItemFindDto(
+                    itemId = it.id!!,
+                    title = it.title,
+                    link = it.link,
+                ) },
+                images = it.board.images.map { it -> ImageFindDto(
+                    imageId = it.id!!,
+                    saveFileName = it.saveFileName,
+                ) }
+            ) }
+        for (v in find) {
+            v.username shouldBe "username0"
+            //println(v)
+        }
+    }
+
+    private fun fillMembers(): MutableList<Member> {
+        val members = mutableListOf<Member>()
+        for (i in 0..1) {
+            val member = Member(
+                username = "username$i",
+                password = "password$i",
+                email = "email$i",
+                roles = mutableListOf()
+            )
+            memberRepository.save(member)
+            members.add(member)
+        }
+        return members
+    }
+
+    private fun fillBoards(members: List<Member>): MutableList<Board> {
+        val boards = mutableListOf<Board>()
+        val moodTypes = mutableListOf(MoodType.NEAT, MoodType.CALM, MoodType.OFFICE, MoodType.FANCY, MoodType.GAMING)
+        for (i in 0..3) {
+            val board = Board(
+                title = "title$i",
+                content = "content$i",
+                moodTypes = mutableListOf(moodTypes[i % 5], moodTypes[(i + 1) % 5]),
+                member = members[i / 2]
+            )
+            boardRepository.save(board)
+            boards.add(board)
+        }
+        return boards
+    }
+
+    private fun fillScraps(members: MutableList<Member>, boards: MutableList<Board>): List<Scrap> {
+        val scraps = mutableListOf<Scrap>()
+        for (i in 0..3) {
+            val scrap = Scrap(
+                member = members[i / 2],
+                board = boards[i],
+            )
+            scrapRepository.save(scrap)
+            scraps.add(scrap)
+        }
+        return scraps
     }
 }

@@ -49,6 +49,7 @@ class DBFileUploadServiceTest @Autowired constructor(
         title = result.title,
         content = result.content,
         moodTypes = result.moodTypes,
+        scrapCount = result.scrapCount,
     )
     val fileSaveDto = FileSaveDto(
         files = mutableListOf(
