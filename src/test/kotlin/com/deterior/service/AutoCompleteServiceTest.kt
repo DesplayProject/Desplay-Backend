@@ -1,5 +1,6 @@
 package com.deterior.service
 
+import com.deterior.global.service.AutoCompleteService
 import com.deterior.global.util.ApplicationProperties
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.BehaviorSpec
@@ -16,7 +17,8 @@ import kotlin.test.AfterTest
 @SpringBootTest
 class AutoCompleteServiceTest @Autowired constructor(
     val applicationProperties: ApplicationProperties,
-    val redisTemplate: RedisTemplate<String, String>
+    val redisTemplate: RedisTemplate<String, String>,
+    val autoCompleteService: AutoCompleteService
 ) : AnnotationSpec() {
 
     val limit = applicationProperties.autoComplete.limit
@@ -58,11 +60,25 @@ class AutoCompleteServiceTest @Autowired constructor(
         val input = "자연은맛있다튀기지않고바람으로말린생라면"
         val zSetOperations = redisTemplate.opsForZSet()
         saveZSet(input, zSetOperations)
-        println(zSetOperations.score("autoComplete", "$input*"))
+        zSetOperations.score("autoComplete", "$input*") shouldBe 0.0
         saveZSet(input, zSetOperations)
-        println(zSetOperations.score("autoComplete", "$input*"))
+        zSetOperations.score("autoComplete", "$input*") shouldBe -1.0
         saveZSet(input, zSetOperations)
-        println(zSetOperations.score("autoComplete", "$input*"))
+        zSetOperations.score("autoComplete", "$input*") shouldBe -2.0
+    }
+
+    @Test
+    fun `자동완성 서비스 테스트`() {
+        autoCompleteService.updateAutoComplete("그래픽카드 4070")
+        autoCompleteService.updateAutoComplete("그래픽카드 4070")
+        autoCompleteService.updateAutoComplete("그래픽카드 4080")
+        autoCompleteService.updateAutoComplete("그래픽카드 4080 super")
+        autoCompleteService.updateAutoComplete("그래픽카드 4080 super")
+        autoCompleteService.updateAutoComplete("그래픽카드 4080 super")
+        val result = autoCompleteService.getAutoComplete("그래픽")
+        result.list?.get(0) shouldBe "그래픽카드 4080 super"
+        result.list?.get(1) shouldBe "그래픽카드 4070"
+        result.list?.get(2) shouldBe "그래픽카드 4080"
     }
 
     private fun saveZSet(input: String, zSetOperations: ZSetOperations<String, String>) {

@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface BoardSearchRepository {
-    fun boardSearch(condition: BoardSearchCondition?, pageable: Pageable): Page<BoardFindDto>
+    fun selectSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto>
 }

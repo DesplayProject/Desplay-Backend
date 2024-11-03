@@ -30,12 +30,12 @@ class AutoCompleteService @Autowired constructor(
         val score = autoCompleteRedisDao.getScore(input)
         if (score == null) {
             for (s in input) {
-                str+=s
-                if (str.length == input.length) str+="*"
+                str += s
+                if (str.length == input.length) str += "*"
                 autoCompleteRedisDao.saveData(str, 0.0)
             }
         } else {
-            autoCompleteRedisDao.saveData(input, score-1)
+            autoCompleteRedisDao.saveData("$input*", score-1)
         }
     }
 }

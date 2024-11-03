@@ -7,7 +7,7 @@ import com.deterior.domain.member.dto.MemberContext
 import com.deterior.global.dto.AutoCompleteDto
 import com.deterior.global.service.AutoCompleteService
 import com.deterior.global.util.ApplicationProperties
-import com.deterior.global.util.InitService
+import com.deterior.global.util.InitDBService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -27,12 +27,12 @@ import java.nio.file.Files
 @RequestMapping("/test")
 class TestController @Autowired constructor(
     val applicationProperties: ApplicationProperties,
-    val initService: InitService,
+    val initDBService: InitDBService,
     val boardRepository: BoardRepository,
     val autoCompleteService: AutoCompleteService
 ) {
     init {
-        initService.init()
+        initDBService.init()
     }
     @PostMapping("/member/user")
     fun memberUser(@AuthenticationPrincipal memberContext: MemberContext): String {
@@ -53,7 +53,7 @@ class TestController @Autowired constructor(
 
     @GetMapping("/search")
     fun testSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto> {
-        return boardRepository.boardSearch(condition, pageable)
+        return boardRepository.selectSearch(condition, pageable)
     }
 
     @GetMapping("/auto-complete")

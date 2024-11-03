@@ -121,6 +121,41 @@ class BoardRepositoryImplTest @Autowired constructor(
         }
     }
 
+    @Test
+    @Transactional
+    fun `내가 쓴 게시물 조회`() {
+        val members = fillMembers()
+        val boards = fillBoards(members)
+        fillScraps(members, boards)
+        val result = jpaQueryFactory
+            .selectFrom(board)
+            .where(board.member.username.eq("username1"))
+            .offset(0)
+            .limit(50)
+            .fetch()
+        val find = result
+            .map { it -> BoardFindDto(
+                boardId = it.id!!,
+                title = it.title,
+                moodTypes = it.moodTypes,
+                username = it.member.username,
+                scrapCount = it.scrapCount,
+                items = it.items.map { it -> ItemFindDto(
+                    itemId = it.id!!,
+                    title = it.title,
+                    link = it.link,
+                ) },
+                images = it.images.map { it -> ImageFindDto(
+                    imageId = it.id!!,
+                    saveFileName = it.saveFileName,
+                ) }
+            ) }
+        for (v in find) {
+            v.username shouldBe "username1"
+            println(v)
+        }
+    }
+
     private fun fillMembers(): MutableList<Member> {
         val members = mutableListOf<Member>()
         for (i in 0..1) {

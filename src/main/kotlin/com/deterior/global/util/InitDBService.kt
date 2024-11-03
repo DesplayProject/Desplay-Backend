@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class InitService @Autowired constructor(
+class InitDBService @Autowired constructor(
     private val entityManager: EntityManager
 ) {
     @Transactional
