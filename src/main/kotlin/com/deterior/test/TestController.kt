@@ -8,6 +8,7 @@ import com.deterior.global.dto.AutoCompleteDto
 import com.deterior.global.service.AutoCompleteService
 import com.deterior.global.util.ApplicationProperties
 import com.deterior.global.util.InitDBService
+import com.deterior.global.util.InitRedisService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -29,10 +30,12 @@ class TestController @Autowired constructor(
     val applicationProperties: ApplicationProperties,
     val initDBService: InitDBService,
     val boardRepository: BoardRepository,
-    val autoCompleteService: AutoCompleteService
+    val autoCompleteService: AutoCompleteService,
+    val initRedisService: InitRedisService
 ) {
     init {
-        initDBService.init()
+        //initDBService.init()
+        initRedisService.init()
     }
     @PostMapping("/member/user")
     fun memberUser(@AuthenticationPrincipal memberContext: MemberContext): String {
