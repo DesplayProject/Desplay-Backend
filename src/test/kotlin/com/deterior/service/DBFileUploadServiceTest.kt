@@ -3,7 +3,6 @@ package com.deterior.service
 import com.deterior.DatabaseCleanup
 import com.deterior.domain.board.Board
 import com.deterior.domain.board.dto.BoardDto
-import com.deterior.domain.board.MoodType
 import com.deterior.domain.board.repository.BoardRepository
 import com.deterior.domain.image.dto.FileSaveDto
 import com.deterior.domain.image.service.DBFileUploadService
@@ -40,7 +39,6 @@ class DBFileUploadServiceTest @Autowired constructor(
     val board = Board(
         title = "title",
         content = "content",
-        mutableListOf(MoodType.OFFICE, MoodType.CALM),
         member = saveMember
     )
     val result = boardRepository.save(board)
@@ -48,7 +46,6 @@ class DBFileUploadServiceTest @Autowired constructor(
         boardId = result.id!!,
         title = result.title,
         content = result.content,
-        moodTypes = result.moodTypes,
         scrapCount = result.scrapCount,
     )
     val fileSaveDto = FileSaveDto(

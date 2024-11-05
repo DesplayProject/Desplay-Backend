@@ -46,7 +46,6 @@ class ScrapServiceImplTest @Autowired constructor(
             val board = boardRepository.save(Board(
                 title = "title$i",
                 content = "content$i",
-                moodTypes = emptyList(),
                 member = members[0]
             ))
             boards.add(board)

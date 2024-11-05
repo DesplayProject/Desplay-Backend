@@ -2,7 +2,6 @@ package com.deterior.repository
 
 import com.deterior.DatabaseCleanup
 import com.deterior.domain.board.Board
-import com.deterior.domain.board.MoodType
 import com.deterior.domain.board.QBoard
 import com.deterior.domain.board.QBoard.*
 import com.deterior.domain.board.dto.BoardFindDto
@@ -19,9 +18,16 @@ import com.deterior.domain.scrap.QScrap
 import com.deterior.domain.scrap.QScrap.*
 import com.deterior.domain.scrap.Scrap
 import com.deterior.domain.scrap.repository.ScrapRepository
+import com.deterior.domain.tag.BoardTag
+import com.deterior.domain.tag.QBoardTag.boardTag
+import com.deterior.domain.tag.Tag
+import com.deterior.domain.tag.dto.TagFindDto
+import com.deterior.domain.tag.repository.BoardTagRepository
+import com.deterior.domain.tag.repository.TagRepository
 import com.querydsl.core.group.GroupBy
 import com.querydsl.core.group.GroupBy.*
 import com.querydsl.core.types.Projections
+import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.BehaviorSpec
@@ -41,11 +47,21 @@ class BoardRepositoryImplTest @Autowired constructor(
     val jpaQueryFactory: JPAQueryFactory,
     val scrapRepository: ScrapRepository,
     val memberRepository: MemberRepository,
+    val tagRepository: TagRepository,
+    val boardTagRepository: BoardTagRepository,
 ) : AnnotationSpec() {
 
     @AfterEach
     fun afterEach() {
         databaseCleanup.execute()
+    }
+
+    @BeforeEach
+    fun init() {
+        val members = fillMembers()
+        val boards = fillBoards(members)
+        fillScraps(members, boards)
+        fillTags(boards)
     }
 
     @Test
@@ -64,9 +80,12 @@ class BoardRepositoryImplTest @Autowired constructor(
             .map { it -> BoardFindDto(
                 boardId = it.id!!,
                 title = it.title,
-                moodTypes = it.moodTypes,
                 username = it.member.username,
                 scrapCount = it.scrapCount,
+                tags = it.tags.map { it -> TagFindDto(
+                    tagId = it.tag.id!!,
+                    title = it.tag.title
+                ) },
                 items = it.items.map { it -> ItemFindDto(
                     itemId = it.id!!,
                     title = it.title,
@@ -88,9 +107,6 @@ class BoardRepositoryImplTest @Autowired constructor(
     @Test
     @Transactional
     fun `좋아요한 게시물 조회`() {
-        val members = fillMembers()
-        val boards = fillBoards(members)
-        fillScraps(members, boards)
         val userId: Long = 1
         val result = jpaQueryFactory
             .selectFrom(scrap)
@@ -102,9 +118,12 @@ class BoardRepositoryImplTest @Autowired constructor(
             .map { it -> BoardFindDto(
                 boardId = it.board.id!!,
                 title = it.board.title,
-                moodTypes = it.board.moodTypes,
                 username = it.member.username,
                 scrapCount = it.board.scrapCount,
+                tags = it.board.tags.map { it -> TagFindDto(
+                    tagId = it.tag.id!!,
+                    title = it.tag.title
+                ) },
                 items = it.board.items.map { it -> ItemFindDto(
                     itemId = it.id!!,
                     title = it.title,
@@ -124,9 +143,6 @@ class BoardRepositoryImplTest @Autowired constructor(
     @Test
     @Transactional
     fun `내가 쓴 게시물 조회`() {
-        val members = fillMembers()
-        val boards = fillBoards(members)
-        fillScraps(members, boards)
         val result = jpaQueryFactory
             .selectFrom(board)
             .where(board.member.username.eq("username1"))
@@ -137,9 +153,12 @@ class BoardRepositoryImplTest @Autowired constructor(
             .map { it -> BoardFindDto(
                 boardId = it.id!!,
                 title = it.title,
-                moodTypes = it.moodTypes,
                 username = it.member.username,
                 scrapCount = it.scrapCount,
+                tags = it.tags.map { it -> TagFindDto(
+                    tagId = it.tag.id!!,
+                    title = it.tag.title
+                ) },
                 items = it.items.map { it -> ItemFindDto(
                     itemId = it.id!!,
                     title = it.title,
@@ -153,6 +172,73 @@ class BoardRepositoryImplTest @Autowired constructor(
         for (v in find) {
             v.username shouldBe "username1"
             println(v)
+        }
+    }
+
+    @Test
+    @Transactional
+    fun `태그로 검색`() {
+        val keyword = "RTX 5060"
+        val result = jpaQueryFactory
+            .selectFrom(board)
+            .where(
+                board.id.`in`(
+                    JPAExpressions
+                        .select(boardTag.board.id)
+                        .from(boardTag)
+                        .where(boardTag.tag.title.contains(keyword))
+                        .groupBy(boardTag.board.id)
+                )
+            )
+            .offset(0)
+            .limit(50)
+            .fetch()
+        val find: List<BoardFindDto> = result
+            .map { it -> BoardFindDto(
+                boardId = it.id!!,
+                title = it.title,
+                username = it.member.username,
+                scrapCount = it.scrapCount,
+                tags = it.tags.map { it -> TagFindDto(
+                    tagId = it.tag.id!!,
+                    title = it.tag.title
+                ) },
+                items = it.items.map { it -> ItemFindDto(
+                    itemId = it.id!!,
+                    title = it.title,
+                    link = it.link,
+                ) },
+                images = it.images.map { it -> ImageFindDto(
+                    imageId = it.id!!,
+                    saveFileName = it.saveFileName,
+                ) }
+            ) }
+        for (v in find) {
+            println(v)
+        }
+    }
+
+    private fun fillTags(boards: MutableList<Board>) {
+        val tags = mutableListOf<Tag>()
+        val list = listOf("RTX 4070", "RTX 4070ti", "RTX 4080 super", "RTX 5060")
+        for (i in 0..3) {
+            val tag = Tag(
+                list[i]
+            )
+            tagRepository.save(tag)
+            tags.add(tag)
+        }
+        for (i in 0..3) {
+            boardTagRepository.save(
+                BoardTag(
+                    board = boards[i],
+                    tag = tags[i % 4],
+                ))
+            boardTagRepository.save(
+                BoardTag(
+                    board = boards[i],
+                    tag = tags[(i + 1) % 4],
+                ))
         }
     }
 
@@ -173,12 +259,10 @@ class BoardRepositoryImplTest @Autowired constructor(
 
     private fun fillBoards(members: List<Member>): MutableList<Board> {
         val boards = mutableListOf<Board>()
-        val moodTypes = mutableListOf(MoodType.NEAT, MoodType.CALM, MoodType.OFFICE, MoodType.FANCY, MoodType.GAMING)
         for (i in 0..3) {
             val board = Board(
                 title = "title$i",
                 content = "content$i",
-                moodTypes = mutableListOf(moodTypes[i % 5], moodTypes[(i + 1) % 5]),
                 member = members[i / 2]
             )
             boardRepository.save(board)

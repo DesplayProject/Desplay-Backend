@@ -1,11 +1,11 @@
 package com.deterior.global.controller
 
-import com.deterior.global.dto.AutoCompleteDto
+import com.deterior.global.dto.AutoCompleteGetResponse
 import com.deterior.global.dto.AutoCompleteGetRequest
 import com.deterior.global.dto.AutoCompleteUpdateRequest
+import com.deterior.global.dto.AutoCompleteUpdateResponse
 import com.deterior.global.service.AutoCompleteService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,15 +21,16 @@ class AutoCompleteController @Autowired constructor(
     @GetMapping("/get-string")
     fun getAutoCompleteString(
         @RequestBody autoCompleteGetRequest: AutoCompleteGetRequest
-    ): ResponseEntity<AutoCompleteDto> {
+    ): ResponseEntity<AutoCompleteGetResponse> {
         val result = autoCompleteService.getAutoComplete(autoCompleteGetRequest.input)
-        return ResponseEntity.ok(result)
+        return ResponseEntity.ok(result.toResponse())
     }
 
     @PostMapping("/update-string")
     fun updateAutoCompleteString(
         @RequestBody autoCompleteUpdateRequest: AutoCompleteUpdateRequest
-    ) {
+    ): ResponseEntity<AutoCompleteUpdateResponse> {
         autoCompleteService.updateAutoComplete(autoCompleteUpdateRequest.input)
+        return ResponseEntity.ok(autoCompleteUpdateRequest.toResponse())
     }
 }

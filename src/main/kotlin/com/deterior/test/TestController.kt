@@ -4,7 +4,8 @@ import com.deterior.domain.board.dto.BoardFindDto
 import com.deterior.domain.board.dto.BoardSearchCondition
 import com.deterior.domain.board.repository.BoardRepository
 import com.deterior.domain.member.dto.MemberContext
-import com.deterior.global.dto.AutoCompleteDto
+import com.deterior.global.dto.AutoCompleteGetDto
+import com.deterior.global.dto.AutoCompleteGetResponse
 import com.deterior.global.service.AutoCompleteService
 import com.deterior.global.util.ApplicationProperties
 import com.deterior.global.util.InitDBService
@@ -35,7 +36,7 @@ class TestController @Autowired constructor(
 ) {
     init {
         //initDBService.init()
-        initRedisService.init()
+        //initRedisService.init()
     }
     @PostMapping("/member/user")
     fun memberUser(@AuthenticationPrincipal memberContext: MemberContext): String {
@@ -60,7 +61,7 @@ class TestController @Autowired constructor(
     }
 
     @GetMapping("/auto-complete")
-    fun testAutoComplete(keyword: String): ResponseEntity<AutoCompleteDto> {
+    fun testAutoComplete(keyword: String): ResponseEntity<AutoCompleteGetDto> {
         return ResponseEntity.ok(autoCompleteService.getAutoComplete(keyword))
     }
 }

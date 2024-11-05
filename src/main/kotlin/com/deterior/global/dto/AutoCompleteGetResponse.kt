@@ -1,5 +1,5 @@
 package com.deterior.global.dto
 
-data class AutoCompleteDto(
+data class AutoCompleteGetResponse(
     val list: List<String>?
 )

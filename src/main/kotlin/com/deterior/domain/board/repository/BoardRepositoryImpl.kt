@@ -1,7 +1,6 @@
 package com.deterior.domain.board.repository
 
 import com.deterior.domain.board.Board
-import com.deterior.domain.board.MoodType
 import com.deterior.domain.board.QBoard.*
 import com.deterior.domain.board.dto.BoardFindDto
 import com.deterior.domain.board.dto.BoardSearchCondition
@@ -16,9 +15,15 @@ import com.deterior.domain.member.repository.MemberRepository
 import com.deterior.domain.member.service.MemberService
 import com.deterior.domain.scrap.QScrap.scrap
 import com.deterior.domain.scrap.Scrap
+import com.deterior.domain.tag.QBoardTag
+import com.deterior.domain.tag.QBoardTag.*
+import com.deterior.domain.tag.QTag
+import com.deterior.domain.tag.QTag.*
+import com.deterior.domain.tag.dto.TagFindDto
 import com.querydsl.core.types.Order
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.dsl.BooleanExpression
+import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -59,7 +64,13 @@ class BoardRepositoryImpl @Autowired constructor(
                 containTitle(condition.keyword)?.or(
                     containItem(condition.keyword)
                 ),
-                containMoodType(condition.moodTypes),
+                board.id.`in`(
+                    JPAExpressions
+                        .select(boardTag.board.id)
+                        .from(boardTag)
+                        .where(boardTag.tag.title.`in`(condition.tags))
+                        .groupBy(boardTag.board.id)
+                )
             )
             .groupBy(board.id)
             .offset(pageable.offset)
@@ -97,9 +108,12 @@ class BoardRepositoryImpl @Autowired constructor(
         .map { it -> BoardFindDto(
             boardId = it.board.id!!,
             title = it.board.title,
-            moodTypes = it.board.moodTypes,
             username = it.member.username,
             scrapCount = it.board.scrapCount,
+            tags = it.board.tags.map { it -> TagFindDto(
+                tagId = it.tag.id!!,
+                title = it.tag.title
+            ) },
             items = it.board.items.map { it -> ItemFindDto(
                 itemId = it.id!!,
                 title = it.title,
@@ -116,9 +130,12 @@ class BoardRepositoryImpl @Autowired constructor(
                 BoardFindDto(
                     boardId = it.id!!,
                     title = it.title,
-                    moodTypes = it.moodTypes,
                     username = it.member.username,
                     scrapCount = it.scrapCount,
+                    tags = it.tags.map { it -> TagFindDto(
+                        tagId = it.tag.id!!,
+                        title = it.tag.title
+                    ) },
                     items = it.items.map { it -> ItemFindDto(
                         itemId = it.id!!,
                         title = it.title,
@@ -144,11 +161,7 @@ class BoardRepositoryImpl @Autowired constructor(
         return result
     }
 
-    private fun containMember(username: String?): BooleanExpression? = if (hasText(username)) member.username.eq(username) else null
-
     private fun containTitle(title: String?): BooleanExpression? = if (hasText(title)) board.title.contains(title) else null
 
     private fun containItem(word: String?): BooleanExpression? = if (hasText(word)) item.title.contains(word) else null
-
-    private fun containMoodType(moodTypes: List<MoodType>?): BooleanExpression? = if(!moodTypes.isNullOrEmpty()) board.moodTypes.any().`in`(moodTypes) else null
 }

@@ -2,6 +2,7 @@ package com.deterior.global.exception.controller
 
 import com.deterior.global.exception.AuthenticationFailException
 import com.deterior.global.exception.DuplicateException
+import com.deterior.global.exception.ImageException
 import com.deterior.global.exception.JwtTokenException
 import com.deterior.global.exception.dto.ErrorResponse
 import org.springframework.http.HttpStatus
@@ -41,10 +42,22 @@ class GlobalExceptionHandler {
         exception: JwtTokenException
     ): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse.toResponse(
-            status = HttpStatus.UNAUTHORIZED.value(),
+            status = HttpStatus.FORBIDDEN.value(),
             errorCode = exception.errorCode,
             values = listOf(exception.value)
         )
         return ResponseEntity(errorResponse, HttpStatus.FORBIDDEN)
+    }
+
+    @ExceptionHandler(ImageException::class)
+    fun handleImageException(
+        exception: ImageException
+    ): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse.toResponse(
+            status = HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
+            errorCode = exception.errorCode,
+            values = listOf(exception.value)
+        )
+        return ResponseEntity(errorResponse, HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     }
 }

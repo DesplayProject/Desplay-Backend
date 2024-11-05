@@ -6,6 +6,7 @@ import com.deterior.domain.board.service.BoardService
 import com.deterior.domain.image.service.FileUploadService
 import com.deterior.domain.item.service.ItemService
 import com.deterior.domain.board.facade.BoardFacade
+import com.deterior.domain.tag.service.BoardTagService
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.*
 import org.springframework.boot.test.context.SpringBootTest
@@ -16,21 +17,24 @@ class BoardFacadeTest : BehaviorSpec({
     val boardService = mockk<BoardService>()
     val fileUploadService = mockk<FileUploadService>()
     val itemService = mockk<ItemService>()
+    val tageService = mockk<BoardTagService>()
     val boardFacade = BoardFacade(
         boardService = boardService,
         fileUploadService = fileUploadService,
-        itemService = itemService
+        itemService = itemService,
+        boardTagService = tageService
     )
 
     Given("Board와 관련된 비즈니스 로직을 수행하는 facade가 있디") {
         every { boardService.saveBoard(any()) } returns mockk()
         every { fileUploadService.saveFile(any()) } returns listOf()
         every { itemService.saveItem(any()) } returns listOf()
+        every { tageService.saveTag(any()) } returns listOf()
         When("facade를 호출한다") {
             val request = BoardWriteDto(
                 title = "title",
                 content = "content",
-                moodTypes = listOf(),
+                tags = listOf(),
                 files = listOf(),
                 items = listOf(),
                 memberDto = mockk()

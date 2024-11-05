@@ -1,7 +1,6 @@
 package com.deterior.global.util
 
 import com.deterior.domain.board.Board
-import com.deterior.domain.board.MoodType
 import com.deterior.domain.image.Image
 import com.deterior.domain.item.Item
 import com.deterior.domain.member.Member
@@ -54,12 +53,10 @@ class InitDBService @Autowired constructor(
 
     private fun fillBoards(members: List<Member>): MutableList<Board> {
         val boards = mutableListOf<Board>()
-        val moodTypes = mutableListOf(MoodType.NEAT, MoodType.CALM, MoodType.OFFICE, MoodType.FANCY, MoodType.GAMING)
         for (i in 0..49) {
             val board = Board(
                 title = "title$i",
                 content = "content$i",
-                moodTypes = mutableListOf(moodTypes[i % 5], moodTypes[(i + 1) % 5]),
                 member = members[i / 5]
             )
             entityManager.persist(board)
