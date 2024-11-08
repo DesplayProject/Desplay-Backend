@@ -35,6 +35,8 @@ class ScrapServiceImpl @Autowired constructor(
 
     @Transactional
     override fun undoLike(scrapUndoDto: ScrapUndoDto) {
+        val scrap = scrapRepository.findById(scrapUndoDto.scrapId).get()
+        scrap.board.scrapCount--
         scrapRepository.deleteById(scrapUndoDto.scrapId)
     }
 

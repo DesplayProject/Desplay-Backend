@@ -7,4 +7,5 @@ data class BoardWriteResponse(
     val title: String,
     val itemSize: Int,
     val fileSize: Int,
+    val tagSize: Int
 )

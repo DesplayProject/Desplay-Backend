@@ -16,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
-@RequestMapping("/mail")
+@RequestMapping("/api/mail")
 class MailController @Autowired constructor(
     private val mailService: MailService,
     private val mailCheckDao: MailCheckDao
 ) {
-
     @PostMapping("/auth-send")
     fun sendAuthMail(
         @RequestBody mailSendRequest: MailSendRequest
@@ -35,7 +34,7 @@ class MailController @Autowired constructor(
         return ResponseEntity.ok(MailSendResponse(mail))
     }
 
-    @PostMapping("/check")
+    @PostMapping("/auth-check")
     fun checkAuthMail(
         @RequestBody mailCheckRequest: MailCheckRequest
     ): ResponseEntity<MailCheckResponse> {

@@ -4,34 +4,33 @@ import com.deterior.DatabaseCleanup
 import com.deterior.domain.board.Board
 import com.deterior.domain.board.dto.BoardDto
 import com.deterior.domain.board.repository.BoardRepository
-import com.deterior.domain.item.dto.ItemSaveDto
-import com.deterior.domain.item.repository.ItemRepository
 import com.deterior.domain.item.service.ItemService
 import com.deterior.domain.member.Member
 import com.deterior.domain.member.repository.MemberRepository
+import com.deterior.domain.tag.dto.BoardTagSaveDto
+import com.deterior.domain.tag.repository.BoardTagRepository
+import com.deterior.domain.tag.repository.TagRepository
+import com.deterior.domain.tag.service.BoardTagService
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.mockk
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 
-//@DataJpaTest
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest
-class ItemServiceImplTest @Autowired constructor(
+class BoardTagServiceImplTest @Autowired constructor(
     private val databaseCleanup: DatabaseCleanup,
     private val boardRepository: BoardRepository,
-    private val itemService: ItemService,
-    private val memberRepository: MemberRepository
-) : BehaviorSpec({
+    private val tagRepository: TagRepository,
+    private val boardTagService: BoardTagService,
+    private val memberRepository: MemberRepository,
+    private val boardTagRepository: BoardTagRepository
+): BehaviorSpec({
 
     afterSpec {
         databaseCleanup.execute()
     }
 
-    Given("Item을 저장하는 서비스가 있다") {
+    Given("Tag를 저장하는 서비스가 있다") {
         val member = Member(
             username = "username",
             password = "password",
@@ -51,23 +50,29 @@ class ItemServiceImplTest @Autowired constructor(
             content = result.content,
             scrapCount = result.scrapCount,
         )
-        val itemSaveDtos = listOf(
-            ItemSaveDto("item1", "https://item1", boardDto),
-            ItemSaveDto("item2", "https://item2", boardDto),
+        val saveBoardTagDtos = listOf(
+            BoardTagSaveDto("1", boardDto),
+            BoardTagSaveDto("2", boardDto)
         )
-        When("Item을 저장한다") {
-            val results = itemService.saveItem(itemSaveDtos)
+        When("Tag를 저장한다") {
+            val results = boardTagService.saveTag(saveBoardTagDtos)
+            val savedBoard = boardRepository.findById(board.id!!).get()
             Then("저장이 성공한다") {
                 var cnt = 1
-                for (item in results) {
-                    item.itemId shouldBe cnt
-                    item.title shouldBe "item${cnt}"
-                    item.link shouldBe "https://item${cnt}"
-                    item.boardDto.boardId shouldBe result.id
-                    item.boardDto.title shouldBe result.title
-                    item.boardDto.content shouldBe result.content
+                for (tag in results) {
+                    tag.boardTagId shouldBe cnt
+                    tag.tagDto.title shouldBe cnt.toString()
                     cnt++
                 }
+                savedBoard.tags.size shouldBe 2
+                boardTagRepository.findAll().size shouldBe 2
+                boardTagService.saveTag(listOf(
+                    BoardTagSaveDto("1", boardDto),
+                    BoardTagSaveDto("2", boardDto)
+                ))
+                tagRepository.findAll().size shouldBe 2
+                savedBoard.tags.size shouldBe 2
+                boardTagRepository.findAll().size shouldBe 4
             }
         }
     }

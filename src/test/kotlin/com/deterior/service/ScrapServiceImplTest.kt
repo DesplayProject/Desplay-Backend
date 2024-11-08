@@ -46,7 +46,6 @@ class ScrapServiceImplTest @Autowired constructor(
             val board = boardRepository.save(Board(
                 title = "title$i",
                 content = "content$i",
-                moodTypes = emptyList(),
                 member = members[0]
             ))
             boards.add(board)
@@ -69,6 +68,9 @@ class ScrapServiceImplTest @Autowired constructor(
                     dto.memberDto.memberId shouldBe members[i].id
                     dto.boardDto.boardId shouldBe boards[i/2].id
                 }
+                for (like in scrapRepository.findAll()) {
+                    like.board.scrapCount shouldBe 2
+                }
             }
         }
         When("Scrap를 취소한다") {
@@ -78,6 +80,11 @@ class ScrapServiceImplTest @Autowired constructor(
                 ))
                 Then("취소가 성공한다") {
                     scrapRepository.findAll().size shouldBe (3 - i)
+                }
+            }
+            Then("모든 좋아요의 개수가 0이된다") {
+                for (board in boardRepository.findAll()) {
+                    board.scrapCount shouldBe 0
                 }
             }
         }

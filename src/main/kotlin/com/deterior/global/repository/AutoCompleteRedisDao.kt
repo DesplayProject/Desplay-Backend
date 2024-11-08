@@ -13,7 +13,7 @@ class AutoCompleteRedisDao @Autowired constructor(
 
     fun getIndex(input: String): Long? = zSetOperations.rank("autoComplete", input)
 
-    fun getRangeList(index: Long): Set<String> = zSetOperations.range("autoComplete", index, index + 1000) as Set<String>
+    fun getRangeList(index: Long): Set<String> = zSetOperations.range("autoComplete", index - 1000, index + 1000) as Set<String>
 
     fun getScore(input: String): Double? = zSetOperations.score("autoComplete", "$input*")
 

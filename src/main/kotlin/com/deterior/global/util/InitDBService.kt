@@ -1,25 +1,51 @@
 package com.deterior.global.util
 
 import com.deterior.domain.board.Board
-import com.deterior.domain.board.MoodType
 import com.deterior.domain.image.Image
 import com.deterior.domain.item.Item
 import com.deterior.domain.member.Member
+import com.deterior.domain.scrap.Scrap
+import com.deterior.domain.tag.BoardTag
+import com.deterior.domain.tag.Tag
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class InitBoardService @Autowired constructor(
+class InitDBService @Autowired constructor(
     private val entityManager: EntityManager
 ) {
     @Transactional
     fun init() {
         val members = fillMembers()
         val boards = fillBoards(members)
+        fillScraps(members, boards)
         fillItems(boards)
         fillImages(boards)
+        fillTags(boards)
+    }
+
+    private fun fillTags(boards: MutableList<Board>): MutableList<Tag> {
+        val tags = mutableListOf<Tag>()
+        for (i in 0..24) {
+            val tag = Tag("titleTag$i")
+            entityManager.persist(tag)
+            tags.add(tag)
+        }
+        for (i in 0..24) {
+            val boardTag1 = BoardTag(
+                board = boards[i],
+                tag = tags[i],
+            )
+            val boardTag2 = BoardTag(
+                board = boards[i * 2],
+                tag = tags[i],
+            )
+            entityManager.persist(boardTag1)
+            entityManager.persist(boardTag2)
+        }
+        return tags
     }
 
     private fun fillMembers(): MutableList<Member> {
@@ -37,14 +63,25 @@ class InitBoardService @Autowired constructor(
         return members
     }
 
+    private fun fillScraps(members: MutableList<Member>, boards: MutableList<Board>): List<Scrap> {
+        val scraps = mutableListOf<Scrap>()
+        for (i in 0..19) {
+            val scrap = Scrap(
+                member = members[i / 2],
+                board = boards[i / 2],
+            )
+            entityManager.persist(scrap)
+            scraps.add(scrap)
+        }
+        return scraps
+    }
+
     private fun fillBoards(members: List<Member>): MutableList<Board> {
         val boards = mutableListOf<Board>()
-        val moodTypes = mutableListOf(MoodType.NEAT, MoodType.CALM, MoodType.OFFICE, MoodType.FANCY, MoodType.GAMING)
         for (i in 0..49) {
             val board = Board(
                 title = "title$i",
                 content = "content$i",
-                moodTypes = mutableListOf(moodTypes[i % 5], moodTypes[(i + 1) % 5]),
                 member = members[i / 5]
             )
             entityManager.persist(board)

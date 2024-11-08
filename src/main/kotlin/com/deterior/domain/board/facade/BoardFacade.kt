@@ -7,6 +7,7 @@ import com.deterior.domain.image.dto.FileSaveDto
 import com.deterior.domain.image.service.FileUploadService
 import com.deterior.domain.item.dto.ItemSaveDto
 import com.deterior.domain.item.service.ItemService
+import com.deterior.domain.tag.service.BoardTagService
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -16,17 +17,20 @@ class BoardFacade @Autowired constructor(
     private val boardService: BoardService,
     private val fileUploadService: FileUploadService,
     private val itemService: ItemService,
+    private val boardTagService: BoardTagService,
 ) {
     @Transactional
     fun writeBoard(boardWriteDto: BoardWriteDto): BoardWriteResponse {
         val boardDto = boardService.saveBoard(boardWriteDto.toBoardSaveDto())
         val saveFiles = fileUploadService.saveFile(boardWriteDto.toFileSaveDto(boardDto))
         val saveItems = itemService.saveItem(boardWriteDto.toItemSaveDto(boardDto))
+        val saveTags = boardTagService.saveTag(boardWriteDto.toTagSaveDto(boardDto))
         return BoardWriteResponse(
             memberDto = boardWriteDto.memberDto,
             title = boardWriteDto.title,
             itemSize = saveItems.size,
             fileSize = saveFiles.size,
+            tagSize = saveTags.size,
         )
     }
 }

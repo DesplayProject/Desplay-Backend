@@ -1,13 +1,15 @@
 package com.deterior.test
 
+import com.deterior.domain.board.dto.BoardFindDto
 import com.deterior.domain.board.dto.BoardSearchCondition
-import com.deterior.domain.board.dto.BoardMainFindDto
 import com.deterior.domain.board.repository.BoardRepository
 import com.deterior.domain.member.dto.MemberContext
-import com.deterior.global.dto.AutoCompleteDto
+import com.deterior.global.dto.AutoCompleteGetDto
+import com.deterior.global.dto.AutoCompleteGetResponse
 import com.deterior.global.service.AutoCompleteService
 import com.deterior.global.util.ApplicationProperties
-import com.deterior.global.util.InitBoardService
+import com.deterior.global.util.InitDBService
+import com.deterior.global.util.InitRedisService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -27,13 +29,15 @@ import java.nio.file.Files
 @RequestMapping("/test")
 class TestController @Autowired constructor(
     val applicationProperties: ApplicationProperties,
-    val initBoardService: InitBoardService,
+    val initDBService: InitDBService,
     val boardRepository: BoardRepository,
-    val autoCompleteService: AutoCompleteService
+    val autoCompleteService: AutoCompleteService,
+    val initRedisService: InitRedisService
 ) {
-//    init {
-//        initBoardService.init()
-//    }
+    init {
+        initDBService.init()
+        //initRedisService.init()
+    }
     @PostMapping("/member/user")
     fun memberUser(@AuthenticationPrincipal memberContext: MemberContext): String {
         return "${memberContext.username}, ${memberContext.password}, ${memberContext.memberDto}"
@@ -52,12 +56,12 @@ class TestController @Autowired constructor(
     }
 
     @GetMapping("/search")
-    fun testSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardMainFindDto> {
-        return boardRepository.mainBoardSearch(condition, pageable)
+    fun testSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto> {
+        return boardRepository.selectSearch(condition, pageable)
     }
 
     @GetMapping("/auto-complete")
-    fun testAutoComplete(keyword: String): ResponseEntity<AutoCompleteDto> {
+    fun testAutoComplete(keyword: String): ResponseEntity<AutoCompleteGetDto> {
         return ResponseEntity.ok(autoCompleteService.getAutoComplete(keyword))
     }
 }
