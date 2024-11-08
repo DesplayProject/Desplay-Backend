@@ -63,14 +63,15 @@ class BoardRepositoryImpl @Autowired constructor(
             .where(
                 containTitle(condition.keyword)?.or(
                     containItem(condition.keyword)
+                )?.or(
+                    board.id.`in`(
+                        JPAExpressions
+                            .select(boardTag.board.id)
+                            .from(boardTag)
+                            .where(boardTag.tag.title.contains(condition.keyword))
+                            .groupBy(boardTag.board.id)
+                    )
                 ),
-                board.id.`in`(
-                    JPAExpressions
-                        .select(boardTag.board.id)
-                        .from(boardTag)
-                        .where(boardTag.tag.title.`in`(condition.tags))
-                        .groupBy(boardTag.board.id)
-                )
             )
             .groupBy(board.id)
             .offset(pageable.offset)

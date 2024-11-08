@@ -5,6 +5,8 @@ import com.deterior.domain.image.Image
 import com.deterior.domain.item.Item
 import com.deterior.domain.member.Member
 import com.deterior.domain.scrap.Scrap
+import com.deterior.domain.tag.BoardTag
+import com.deterior.domain.tag.Tag
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +23,29 @@ class InitDBService @Autowired constructor(
         fillScraps(members, boards)
         fillItems(boards)
         fillImages(boards)
+        fillTags(boards)
+    }
+
+    private fun fillTags(boards: MutableList<Board>): MutableList<Tag> {
+        val tags = mutableListOf<Tag>()
+        for (i in 0..24) {
+            val tag = Tag("titleTag$i")
+            entityManager.persist(tag)
+            tags.add(tag)
+        }
+        for (i in 0..24) {
+            val boardTag1 = BoardTag(
+                board = boards[i],
+                tag = tags[i],
+            )
+            val boardTag2 = BoardTag(
+                board = boards[i * 2],
+                tag = tags[i],
+            )
+            entityManager.persist(boardTag1)
+            entityManager.persist(boardTag2)
+        }
+        return tags
     }
 
     private fun fillMembers(): MutableList<Member> {
