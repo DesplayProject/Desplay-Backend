@@ -35,7 +35,7 @@ class TestController @Autowired constructor(
     val initRedisService: InitRedisService
 ) {
     init {
-        initDBService.init()
+        //initDBService.init()
         //initRedisService.init()
     }
     @PostMapping("/member/user")

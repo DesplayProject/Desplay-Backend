@@ -1,9 +1,7 @@
 package com.deterior.domain.member.service
 
 import com.deterior.domain.member.Member
-import com.deterior.domain.member.dto.SignInRequest
-import com.deterior.domain.member.dto.SignUpRequest
-import com.deterior.domain.member.dto.SignUpResponse
+import com.deterior.domain.member.dto.*
 import com.deterior.domain.member.repository.MemberRepository
 import com.deterior.global.exception.*
 import com.deterior.sercurity.dto.JwtToken
@@ -65,5 +63,15 @@ class MemberServiceImpl @Autowired constructor(
         val jwtToken = jwtTokenProvider.generateToken(authentication)
         refreshTokenRepository.save(jwtToken.toRefreshToken(authentication))
         return jwtToken
+    }
+
+    override fun resetPassword(passwordResetRequest: PasswordResetRequest): PasswordResetResponse {
+        val member = memberRepository.findByEmail(passwordResetRequest.email)
+            .orElseThrow{ AuthenticationFailException(ErrorCode.UNREGISTERD_EMAIL.message, passwordResetRequest.email, ErrorCode.UNREGISTERD_EMAIL) }
+        member.password = passwordEncoder.encode(passwordResetRequest.newPassword)
+        return PasswordResetResponse(
+            username = member.username,
+            password = member.password
+        )
     }
 }
