@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails
 class Member (
     val username: String,
 
-    val password: String,
+    var password: String,
 
     var email: String,
 
