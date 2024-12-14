@@ -7,7 +7,6 @@
 
 test-application.yml
 application.yml
-docker-compose.yml
 
 # User-specific stuff
 .idea/**/workspace.xml
