@@ -8,7 +8,7 @@ class ApplicationProperties (
     val mail: Mail,
     val upload: Upload,
     val data: Data,
-    val autoComplete: AutoComplete
+    val autoComplete: AutoComplete,
 ){
     data class Jwt(
         val secret: String,

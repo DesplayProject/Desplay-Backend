@@ -27,6 +27,7 @@ import com.deterior.domain.tag.repository.TagRepository
 import com.querydsl.core.group.GroupBy
 import com.querydsl.core.group.GroupBy.*
 import com.querydsl.core.types.Projections
+import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import io.kotest.core.spec.style.AnnotationSpec
@@ -178,17 +179,11 @@ class BoardRepositoryImplTest @Autowired constructor(
     @Test
     @Transactional
     fun `태그로 검색`() {
-        val keyword = "RTX 5060"
+        val keyword = "#RTX 4070"
         val result = jpaQueryFactory
             .selectFrom(board)
             .where(
-                board.id.`in`(
-                    JPAExpressions
-                        .select(boardTag.board.id)
-                        .from(boardTag)
-                        .where(boardTag.tag.title.contains(keyword))
-                        .groupBy(boardTag.board.id)
-                )
+                containTag(keyword)
             )
             .offset(0)
             .limit(50)
@@ -216,6 +211,20 @@ class BoardRepositoryImplTest @Autowired constructor(
         for (v in find) {
             println(v)
         }
+    }
+
+    private fun containTag(keyword: String): BooleanExpression? {
+        if(keyword.startsWith("#")) {
+            val word = keyword.substring(1)
+            return board.id.`in`(
+                JPAExpressions
+                    .select(boardTag.board.id)
+                    .from(boardTag)
+                    .where(boardTag.tag.title.contains(word))
+                    .groupBy(boardTag.board.id)
+            )
+        }
+        return null
     }
 
     private fun fillTags(boards: MutableList<Board>) {

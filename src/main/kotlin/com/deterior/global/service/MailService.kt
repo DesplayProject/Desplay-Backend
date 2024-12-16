@@ -2,6 +2,7 @@ package com.deterior.global.service
 
 import com.deterior.global.dto.MailDto
 import com.deterior.global.repository.MailCheckDao
+import com.deterior.global.service.MailType.*
 import com.deterior.global.util.ApplicationProperties
 import jakarta.mail.internet.MimeMessage
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +23,7 @@ class MailService @Autowired constructor(
         val receiverMail = mailDto.receiverMail
         val message = createMessageHeader(receiverMail)
         when (mailType) {
-            MailType.EMAIL_AUTH -> {
+            EMAIL_AUTH -> {
                 val authNum = mailCheckDao.saveAuthNumber(receiverMail)
                 message.subject = mailType.title
                 message.setText(mailType.content + authNum, "UTF-8", "html")
