@@ -70,5 +70,6 @@ jobs:
           script: |
             sudo docker rm -f $(sudo docker ps -aq)
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/desplay:latest
-            cd /root && sudo docker-compose up -d
+            sudo -i
+            cd ~ && sudo docker-compose up -d
       
