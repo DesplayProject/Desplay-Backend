@@ -119,8 +119,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
-            sudo docker stop desplay-container-${{ $CURRENT_UPSTREAM }}
-            sudo docker rm desplay-container-${{ $CURRENT_UPSTREAM }}
+            sudo docker stop desplay-container-${{ env.CURRENT_UPSTREAM }}
+            sudo docker rm desplay-container-${{ env.CURRENT_UPSTREAM }}
         
       
       
