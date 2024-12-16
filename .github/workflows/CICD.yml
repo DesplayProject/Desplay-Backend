@@ -71,5 +71,5 @@ jobs:
             sudo docker rm -f $(sudo docker ps -aq)
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/desplay:latest
             sudo -i
-            cd ~ && sudo docker-compose up -d
+            cd /root && sudo docker-compose up -d
       
