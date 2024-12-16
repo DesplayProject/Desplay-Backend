@@ -30,6 +30,7 @@ class SecurityConfig @Autowired constructor(
         "/api/mail/**",
         "/test/**",
         "error",
+        "/env"
     )
 
     @Bean
