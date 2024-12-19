@@ -30,7 +30,6 @@ class DBFileUploadService @Autowired constructor(
             val originFileName: String? = image.originalFilename
             val saveFileName = createSaveFileName(originFileName)
             val filePath = getFilePath(saveFileName)
-            image.transferTo(File(filePath))
             val savedImage = imageRepository.save(
                 Image(
                     originFileName = originFileName,
