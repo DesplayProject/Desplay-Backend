@@ -1,6 +1,7 @@
 package com.deterior.global.util
 
 import com.deterior.domain.board.Board
+import com.deterior.domain.follow.Follow
 import com.deterior.domain.image.Image
 import com.deterior.domain.item.Item
 import com.deterior.domain.member.Member
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
+@Transactional
 class InitDBService @Autowired constructor(
     private val entityManager: EntityManager
 ) {
@@ -24,6 +26,7 @@ class InitDBService @Autowired constructor(
         fillItems(boards)
         fillImages(boards)
         fillTags(boards)
+        fillFollows(members)
     }
 
     private fun fillTags(boards: MutableList<Board>): MutableList<Tag> {
@@ -48,7 +51,7 @@ class InitDBService @Autowired constructor(
         return tags
     }
 
-    private fun fillMembers(): MutableList<Member> {
+    fun fillMembers(): MutableList<Member> {
         val members = mutableListOf<Member>()
         for (i in 0..9) {
             val member = Member(
@@ -61,6 +64,19 @@ class InitDBService @Autowired constructor(
             members.add(member)
         }
         return members
+    }
+
+    fun fillFollows(members: MutableList<Member>): MutableList<Follow> {
+        val follows = mutableListOf<Follow>()
+        for (i in 0..9) {
+            val follow = Follow(
+                from = members[i],
+                to = members[(i + 1) % 10],
+            )
+            entityManager.persist(follow)
+            follows.add(follow)
+        }
+        return follows
     }
 
     private fun fillScraps(members: MutableList<Member>, boards: MutableList<Board>): List<Scrap> {
