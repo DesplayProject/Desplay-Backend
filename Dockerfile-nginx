@@ -1,0 +1,4 @@
+FROM nginx:latest
+COPY default.conf /etc/nginx/conf.d
+COPY service-env.inc /etc/nginx/conf.d
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
