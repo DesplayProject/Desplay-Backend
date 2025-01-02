@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class ServerController {
-    @Value("\${server.env}")
+    @Value("\${spring.profiles.active}")
     private lateinit var env: String
 
     @GetMapping("/env")
