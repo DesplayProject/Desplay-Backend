@@ -10,5 +10,7 @@ class ServerController {
     private lateinit var env: String
 
     @GetMapping("/env")
-    fun env(): String = env
+    fun env(): String {
+        return if (env.endsWith("-server")) env.removeSuffix("-server") else env
+    } 
 }
