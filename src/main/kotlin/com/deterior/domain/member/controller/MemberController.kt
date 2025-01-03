@@ -1,9 +1,9 @@
 package com.deterior.domain.member.controller
 
 import com.deterior.domain.member.dto.*
-import com.deterior.sercurity.dto.ReissueTokenRequest
+import com.deterior.global.dto.ReissueTokenRequest
 import com.deterior.domain.member.service.MemberService
-import com.deterior.sercurity.dto.JwtToken
+import com.deterior.global.dto.JwtToken
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller

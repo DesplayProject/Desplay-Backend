@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails
 
 data class MemberContext(
     val memberDto: MemberDto,
+    val pwd: String,
     val roles: MutableList<GrantedAuthority>
 ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
@@ -14,7 +15,7 @@ data class MemberContext(
     }
 
     override fun getPassword(): String {
-        return memberDto.password
+        return pwd
     }
 
     override fun getUsername(): String {

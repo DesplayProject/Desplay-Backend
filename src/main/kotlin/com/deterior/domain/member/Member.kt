@@ -23,7 +23,7 @@ class Member (
     fun toDto(): MemberDto = MemberDto(
         memberId = id!!,
         username = username,
-        password = password,
+        //password = password,
         email = email,
         roles = roles
     )

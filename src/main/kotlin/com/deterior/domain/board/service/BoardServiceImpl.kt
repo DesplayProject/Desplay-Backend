@@ -16,31 +16,20 @@ import org.springframework.stereotype.Service
 class BoardServiceImpl @Autowired constructor(
     private val boardRepository: BoardRepository,
     private val memberRepository: MemberRepository,
-    private val objectSerializer: ObjectSerializer
 ) : BoardService {
 
-    //@CachePut(cacheNames = ["board"], key = "#result.boardId")
     @Transactional
     override fun saveBoard(boardSaveDto: BoardSaveDto): BoardDto {
         val member = memberRepository.findById(boardSaveDto.memberDto.memberId).orElseThrow{ NoSuchElementException() }
         val board = boardRepository.save(boardSaveDto.toEntity(member))
-        val key = "board::${board.id}"
         val result = board.toDto()
-        objectSerializer.saveData(key, result, 1L)
         return result
     }
 
-    //@Cacheable(cacheNames = ["board"], key = "#id")
     @Transactional
     override fun findBoardById(id: Long): BoardDto {
-        val key = "board::${id}"
-        val cachedBoard = objectSerializer.getData(key, BoardDto::class.java)
-        if(cachedBoard != null) {
-            return cachedBoard
-        }
         val board = boardRepository.findById(id).orElseThrow { NoSuchElementException() }
         val result = board.toDto()
-        objectSerializer.saveData(key, result, 1L)
         return result
     }
 }

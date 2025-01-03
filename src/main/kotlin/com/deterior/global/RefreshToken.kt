@@ -1,7 +1,5 @@
-package com.deterior.sercurity
+package com.deterior.global
 
-import com.deterior.domain.BaseEntity
-import jakarta.persistence.Entity
 import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash
 

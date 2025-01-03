@@ -47,7 +47,6 @@ class FollowServiceImpl @Autowired constructor(
             MemberDto(
                 memberId = member.id!!,
                 username = member.username,
-                password = member.password,
                 email = member.email,
                 roles = member.roles
             )
@@ -58,7 +57,6 @@ class FollowServiceImpl @Autowired constructor(
         MemberDto(
             memberId = member.id!!,
             username = member.username,
-            password = member.password,
             email = member.email,
             roles = member.roles
         )

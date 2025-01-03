@@ -1,43 +1,36 @@
-package com.deterior.sercurity.provider
+package com.deterior.global.util
 
-import com.deterior.global.util.ApplicationProperties
-import com.deterior.global.util.LoggerCreator
-import com.deterior.sercurity.dto.JwtToken
-import com.deterior.sercurity.exception.NoAuthorizationInTokenException
-import com.deterior.sercurity.service.JwtUserDetailsService
+import com.deterior.logger
+import com.deterior.global.dto.JwtToken
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SignatureException
-import lombok.extern.slf4j.Slf4j
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
+import org.springframework.web.util.ContentCachingRequestWrapper
 import java.security.Key
 import java.time.Instant
 import java.util.*
 
-@Slf4j
 @Component
-class JwtTokenProvider @Autowired constructor(
+class JwtUtils @Autowired constructor(
     private val applicationProperties: ApplicationProperties,
-    private val jwtUserDetailsService: JwtUserDetailsService
 ) {
     lateinit var key: Key
     val accessExpirationTime = applicationProperties.jwt.token.accessExpirationTime
     val refreshExpirationTime = applicationProperties.jwt.token.refreshExpirationTime
     val reissueTime = applicationProperties.jwt.token.reissueTime
 
+    val log = logger()
+
     init {
         val secretKey: String = applicationProperties.jwt.secret
         val keyByte: ByteArray = Decoders.BASE64.decode(secretKey)
         key = Keys.hmacShaKeyFor(keyByte)
     }
-
-    companion object : LoggerCreator()
 
     fun generateToken(authentication: Authentication): JwtToken {
         //jwt 쿠키에 저장되는 노출도가 높은 정보이므로 payload에는 민감한 개인정보대신 권한정보를 넣는다.
@@ -50,40 +43,12 @@ class JwtTokenProvider @Autowired constructor(
         )
     }
 
-    private fun createAccessToken(authentication: Authentication): String {
-        val authorities = authentication.authorities
-            .map { it.toString() }
-            .reduce{ result, new -> "$result,$new" }
-        val now: Long = Date.from(Instant.now()).time
-        val expireTime = Date(now + accessExpirationTime)
-        return Jwts.builder()
-            .setSubject(authentication.name)
-            .claim("auth", authorities)
-            .setExpiration(expireTime)
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact()
-    }
-
-    private fun createRefreshToken(): String {
-        val now: Long = Date.from(Instant.now()).time
-        val expireTime = Date(now + refreshExpirationTime)
-        return Jwts.builder()
-            .setExpiration(expireTime)
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact()
-    }
-
-    fun authenticate(accessToken: String): Authentication {
-        val claims = parseClaims(accessToken)
-        if(claims["auth"] == null) {
-            throw NoAuthorizationInTokenException("권한 정보가 없는 토큰입니다.")
+    fun resolveToken(request: HttpServletRequest): String? {
+        val bearerToken: String = request.getHeader("Authorization")
+        if(bearerToken.contains(bearerToken) && bearerToken.startsWith("Bearer")) {
+            return bearerToken.substring(7)
         }
-        val authorities = claims["auth"]
-            .toString().split(",")
-            .map { SimpleGrantedAuthority(it) }
-            .toList()
-        val user = jwtUserDetailsService.loadUserByUsername(claims.subject)
-        return UsernamePasswordAuthenticationToken(user, "", authorities)
+        return null
     }
 
     fun validateToken(token: String): Boolean {
@@ -105,6 +70,40 @@ class JwtTokenProvider @Autowired constructor(
         return false
     }
 
+    fun createAccessToken(authentication: Authentication): String {
+        val authorities = authentication.authorities
+            .map { it.toString() }
+            .reduce{ result, new -> "$result,$new" }
+        val now: Long = Date.from(Instant.now()).time
+        val expireTime = Date(now + accessExpirationTime)
+        return Jwts.builder()
+            .setSubject(authentication.name)
+            .claim("auth", authorities)
+            .setExpiration(expireTime)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact()
+    }
+
+    fun createRefreshToken(): String {
+        val now: Long = Date.from(Instant.now()).time
+        val expireTime = Date(now + refreshExpirationTime)
+        return Jwts.builder()
+            .setExpiration(expireTime)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact()
+    }
+
+    fun parseClaims(accessToken: String): Claims =
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(accessToken)
+                .body
+        } catch (exception: ExpiredJwtException) {
+            exception.claims
+        }
+
     fun isReissueRefreshToken(token: String): Boolean {
         val jws = Jwts.parserBuilder()
             .setSigningKey(key)
@@ -118,15 +117,4 @@ class JwtTokenProvider @Autowired constructor(
         }
         return false
     }
-
-    private fun parseClaims(accessToken: String): Claims =
-        try {
-            Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(accessToken)
-                .body
-        } catch (exception: ExpiredJwtException) {
-            exception.claims
-        }
 }

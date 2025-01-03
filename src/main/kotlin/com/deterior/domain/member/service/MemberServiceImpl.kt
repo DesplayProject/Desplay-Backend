@@ -4,10 +4,11 @@ import com.deterior.domain.member.Member
 import com.deterior.domain.member.dto.*
 import com.deterior.domain.member.repository.MemberRepository
 import com.deterior.global.exception.*
-import com.deterior.sercurity.dto.JwtToken
-import com.deterior.sercurity.dto.ReissueTokenRequest
-import com.deterior.sercurity.provider.JwtTokenProvider
-import com.deterior.sercurity.repository.RefreshTokenRepository
+import com.deterior.global.dto.JwtToken
+import com.deterior.global.dto.ReissueTokenRequest
+import com.deterior.global.service.JwtProvider
+import com.deterior.global.util.JwtUtils
+import com.deterior.global.repository.RefreshTokenRepository
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
@@ -19,15 +20,16 @@ import org.springframework.stereotype.Service
 @Transactional
 class MemberServiceImpl @Autowired constructor(
     private val memberRepository: MemberRepository,
-    private val jwtTokenProvider: JwtTokenProvider,
     private val authenticationManager: AuthenticationManager,
     private val passwordEncoder: PasswordEncoder,
-    private val refreshTokenRepository: RefreshTokenRepository
+    private val refreshTokenRepository: RefreshTokenRepository,
+    private val jwtUtils: JwtUtils,
+    private val jwtProvider: JwtProvider
 ) : MemberService {
     override fun signIn(signInRequest: SignInRequest): JwtToken {
         val authenticationToken = UsernamePasswordAuthenticationToken(signInRequest.username, signInRequest.password)
         val authentication = authenticationManager.authenticate(authenticationToken)
-        val jwtToken = jwtTokenProvider.generateToken(authentication)
+        val jwtToken = jwtUtils.generateToken(authentication)
         refreshTokenRepository.save(jwtToken.toRefreshToken(authentication))
         return jwtToken
     }
@@ -52,15 +54,15 @@ class MemberServiceImpl @Autowired constructor(
     }
 
     override fun reissue(reissueTokenRequest: ReissueTokenRequest): JwtToken {
-        if (!jwtTokenProvider.validateToken(reissueTokenRequest.refreshToken)) {
+        if (!jwtUtils.validateToken(reissueTokenRequest.refreshToken)) {
             throw InvalidJwtTokenException(ErrorCode.INVALID_TOKEN.message, reissueTokenRequest.refreshToken, ErrorCode.INVALID_TOKEN)
         }
-        val authentication = jwtTokenProvider.authenticate(reissueTokenRequest.accessToken)
+        val authentication = jwtProvider.authenticate(reissueTokenRequest.accessToken)
         val refreshToken = refreshTokenRepository.findById(authentication.name).orElseThrow { RuntimeException("로그아웃된 사용자") }
         if (refreshToken.value != reissueTokenRequest.refreshToken) {
             throw InConsistentJwtTokenException(ErrorCode.INCONSISTENT_TOKEN.message, reissueTokenRequest.refreshToken, ErrorCode.INCONSISTENT_TOKEN)
         }
-        val jwtToken = jwtTokenProvider.generateToken(authentication)
+        val jwtToken = jwtUtils.generateToken(authentication)
         refreshTokenRepository.save(jwtToken.toRefreshToken(authentication))
         return jwtToken
     }

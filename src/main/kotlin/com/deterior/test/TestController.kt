@@ -5,7 +5,6 @@ import com.deterior.domain.board.dto.BoardSearchCondition
 import com.deterior.domain.board.repository.BoardRepository
 import com.deterior.domain.member.dto.MemberContext
 import com.deterior.global.dto.AutoCompleteGetDto
-import com.deterior.global.dto.AutoCompleteGetResponse
 import com.deterior.global.service.AutoCompleteService
 import com.deterior.global.util.ApplicationProperties
 import com.deterior.global.util.InitDBService

@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class ServerController {
-    @Value("\${server.env}")
+    @Value("\${spring.profiles.active}")
     private lateinit var env: String
 
     @GetMapping("/env")
-    fun env(): String = env
+    fun env(): String {
+        return if (env.endsWith("-server")) env.removeSuffix("-server") else env
+    }
 }
