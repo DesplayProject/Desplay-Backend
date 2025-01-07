@@ -33,10 +33,6 @@ class TestController @Autowired constructor(
     val autoCompleteService: AutoCompleteService,
     val initRedisService: InitRedisService
 ) {
-    init {
-        //initDBService.init()
-        //initRedisService.init()
-    }
     @PostMapping("/member/user")
     fun memberUser(@AuthenticationPrincipal memberContext: MemberContext): String {
         return "${memberContext.username}, ${memberContext.password}, ${memberContext.memberDto}"
@@ -62,5 +58,10 @@ class TestController @Autowired constructor(
     @GetMapping("/auto-complete")
     fun testAutoComplete(keyword: String): ResponseEntity<AutoCompleteGetDto> {
         return ResponseEntity.ok(autoCompleteService.getAutoComplete(keyword))
+    }
+
+    @PostMapping("/insert-data")
+    fun insertData() {
+        initDBService.fillAll()
     }
 }

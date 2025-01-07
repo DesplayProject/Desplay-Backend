@@ -19,7 +19,7 @@ class InitDBService @Autowired constructor(
     private val entityManager: EntityManager
 ) {
     @Transactional
-    fun init() {
+    fun fillAll() {
         val members = fillMembers()
         val boards = fillBoards(members)
         fillScraps(members, boards)
