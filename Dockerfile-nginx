@@ -1,0 +1,5 @@
+FROM nginx:latest
+COPY default.conf /etc/nginx/conf.d
+COPY service-env.inc /etc/nginx/conf.d
+RUN apt-get update && apt-get upgrade && apt-get install vim
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

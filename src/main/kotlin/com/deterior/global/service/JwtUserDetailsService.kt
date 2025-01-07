@@ -1,13 +1,10 @@
-package com.deterior.sercurity.service
+package com.deterior.global.service
 
-import com.deterior.domain.member.Member
 import com.deterior.domain.member.dto.MemberContext
-import com.deterior.domain.member.dto.MemberDto
 import com.deterior.domain.member.repository.MemberRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service
 class JwtUserDetailsService @Autowired constructor(
     private val memberRepository: MemberRepository,
 ) : UserDetailsService {
-
     override fun loadUserByUsername(username: String?): UserDetails {
         val member = memberRepository.findByUsername(username!!)
         if (member == null) {
@@ -27,6 +23,6 @@ class JwtUserDetailsService @Autowired constructor(
             .map { SimpleGrantedAuthority(it) }
             .toMutableList()
         val memberDto = member.toDto()
-        return MemberContext(memberDto, roles)
+        return MemberContext(memberDto, member.password, roles)
     }
 }

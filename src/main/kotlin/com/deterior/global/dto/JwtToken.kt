@@ -1,6 +1,6 @@
-package com.deterior.sercurity.dto
+package com.deterior.global.dto
 
-import com.deterior.sercurity.RefreshToken
+import com.deterior.global.RefreshToken
 import org.springframework.security.core.Authentication
 
 data class JwtToken (

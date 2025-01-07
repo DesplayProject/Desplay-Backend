@@ -12,5 +12,5 @@ class ServerController {
     @GetMapping("/env")
     fun env(): String {
         return if (env.endsWith("-server")) env.removeSuffix("-server") else env
-    } 
+    }
 }

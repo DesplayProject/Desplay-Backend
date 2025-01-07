@@ -1,7 +1,7 @@
 package com.deterior.util
 
-import com.deterior.sercurity.RefreshToken
-import com.deterior.sercurity.repository.RefreshTokenRepository
+import com.deterior.global.RefreshToken
+import com.deterior.global.repository.RefreshTokenRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired

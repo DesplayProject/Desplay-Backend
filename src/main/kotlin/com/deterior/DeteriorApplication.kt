@@ -1,5 +1,6 @@
 package com.deterior
 
+import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
@@ -13,6 +14,8 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport
 @ConfigurationPropertiesScan
 @SpringBootApplication
 class DeteriorApplication
+
+inline fun <reified T> T.logger() = LoggerFactory.getLogger(T::class.java)!!
 
 fun main(args: Array<String>) {
     runApplication<DeteriorApplication>(*args)

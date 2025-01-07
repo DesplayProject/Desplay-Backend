@@ -1,7 +1,8 @@
-package com.deterior.sercurity.config
+package com.deterior.global.config
 
-import com.deterior.sercurity.filter.JwtAuthenticationFilter
-import com.deterior.sercurity.provider.JwtTokenProvider
+import com.deterior.global.filter.JwtAuthenticationFilter
+import com.deterior.global.service.JwtProvider
+import com.deterior.global.util.JwtUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -21,7 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @Configuration
 class SecurityConfig @Autowired constructor(
-    val jwtTokenProvider: JwtTokenProvider
+    private val jwtProvider: JwtProvider,
+    private val jwtUtils: JwtUtils
 ) {
     val permitAllList: MutableList<String> = mutableListOf(
         "/api/member/sign-in",
@@ -45,7 +47,7 @@ class SecurityConfig @Autowired constructor(
                 .requestMatchers(*permitAllList.toTypedArray()).permitAll()
                 .anyRequest().authenticated()
             }
-            .addFilterBefore(JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(JwtAuthenticationFilter(jwtProvider, jwtUtils), UsernamePasswordAuthenticationFilter::class.java)
             .build()
     }
 

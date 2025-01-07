@@ -5,7 +5,6 @@ import com.deterior.domain.board.dto.BoardSearchCondition
 import com.deterior.domain.board.repository.BoardRepository
 import com.deterior.domain.member.dto.MemberContext
 import com.deterior.global.dto.AutoCompleteGetDto
-import com.deterior.global.dto.AutoCompleteGetResponse
 import com.deterior.global.service.AutoCompleteService
 import com.deterior.global.util.ApplicationProperties
 import com.deterior.global.util.InitDBService
@@ -34,10 +33,6 @@ class TestController @Autowired constructor(
     val autoCompleteService: AutoCompleteService,
     val initRedisService: InitRedisService
 ) {
-    init {
-        //initDBService.init()
-        //initRedisService.init()
-    }
     @PostMapping("/member/user")
     fun memberUser(@AuthenticationPrincipal memberContext: MemberContext): String {
         return "${memberContext.username}, ${memberContext.password}, ${memberContext.memberDto}"
@@ -63,5 +58,10 @@ class TestController @Autowired constructor(
     @GetMapping("/auto-complete")
     fun testAutoComplete(keyword: String): ResponseEntity<AutoCompleteGetDto> {
         return ResponseEntity.ok(autoCompleteService.getAutoComplete(keyword))
+    }
+
+    @PostMapping("/insert-data")
+    fun insertData() {
+        initDBService.fillAll()
     }
 }

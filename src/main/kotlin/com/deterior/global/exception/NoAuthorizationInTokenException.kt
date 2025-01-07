@@ -1,4 +1,4 @@
-package com.deterior.sercurity.exception
+package com.deterior.global.exception
 
 import javax.naming.AuthenticationException
 

@@ -1,8 +1,8 @@
 package com.deterior.domain.member.service
 
 import com.deterior.domain.member.dto.*
-import com.deterior.sercurity.dto.JwtToken
-import com.deterior.sercurity.dto.ReissueTokenRequest
+import com.deterior.global.dto.JwtToken
+import com.deterior.global.dto.ReissueTokenRequest
 
 interface MemberService {
     fun signIn(signInRequest: SignInRequest): JwtToken

@@ -6,14 +6,12 @@ import com.deterior.domain.member.dto.SignUpResponse
 import com.deterior.domain.member.repository.MemberRepository
 import com.deterior.domain.member.service.MemberService
 import com.deterior.DatabaseCleanup
-import com.deterior.global.util.ApplicationProperties
-import com.deterior.sercurity.dto.JwtToken
-import com.deterior.sercurity.dto.ReissueTokenRequest
+import com.deterior.global.dto.JwtToken
+import com.deterior.global.dto.ReissueTokenRequest
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
