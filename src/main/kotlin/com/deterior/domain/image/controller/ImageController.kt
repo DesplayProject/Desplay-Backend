@@ -1,6 +1,7 @@
 package com.deterior.domain.image.controller
 
 import com.deterior.domain.image.dto.ImageShowRequest
+import com.deterior.domain.image.service.FileUploadService
 import com.deterior.global.util.ApplicationProperties
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
@@ -18,10 +19,11 @@ import java.nio.file.Files
 @RequestMapping("/api/image")
 class ImageController @Autowired constructor(
     private val applicationProperties: ApplicationProperties,
+    private val imageService: FileUploadService
 ) {
     @GetMapping("/show")
     fun showImage(@RequestBody imageShowRequest: ImageShowRequest): ResponseEntity<ByteArray> {
-        val filename = imageShowRequest.filename
+        val filename = imageService.findSaveFilename(imageShowRequest.imageId)
         val path = "${applicationProperties.upload.path}${filename}"
         val image = File(path)
         val header = HttpHeaders()

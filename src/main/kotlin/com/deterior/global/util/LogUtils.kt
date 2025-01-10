@@ -1,6 +1,10 @@
 package com.deterior.global.util
 
+import com.deterior.global.Log
+import com.deterior.global.repository.LogRepository
 import com.deterior.logger
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import org.springframework.web.util.ContentCachingRequestWrapper
 import org.springframework.web.util.ContentCachingResponseWrapper
@@ -8,38 +12,44 @@ import java.util.*
 import kotlin.collections.HashMap
 
 @Component
-class LogUtils {
-
-    private val log = logger()
-
-    fun printLog(request: ContentCachingRequestWrapper,
-                 response: ContentCachingResponseWrapper,
-                 time: Long,
-                 id: String
+class LogUtils @Autowired constructor(
+    private val logRepository: LogRepository
+) {
+    fun saveLog(
+        request: ContentCachingRequestWrapper,
+        response: ContentCachingResponseWrapper,
+        time: Long,
+        uuid: String
     ) {
         val params = HashMap<String, String>()
         for (v in request.parameterMap) {
             params[v.key] = v.value.toString()
         }
-        val message = """
-            
-        >-------------------| [${id}] |-------------------<
-        [METHOD] ${request.method}
-        [URL] ${request.requestURI}
-        [CLIENT IP] ${request.remoteAddr}
-            
-        [REQUEST HEADERS] ${request.headerNames}
-        [REQUEST PARAMS] 
-        ${params}
-        [REQUEST BODY] 
-        ${request.contentAsByteArray.toString(Charsets.UTF_8)}
-            
-        [RESPONSE HEADERS] ${response.headerNames}
-        [RESPONSE BODY] 
-        ${response.contentAsByteArray.toString(Charsets.UTF_8)}
-            
-        [PROCESSING TIME] ${time}ms
-        """.trimIndent()
-        log.info(message)
+        val log = Log(
+            uuid = uuid,
+            method = request.method,
+            url = request.requestURI,
+            clientIp = request.remoteAddr,
+            params = params,
+            requestBody = formatRequest(request),
+            responseBody = formatResponse(response),
+            processingTime = time,
+        )
+        //logRepository.save(log)
     }
+
+    private fun formatRequest(request: ContentCachingRequestWrapper): String =
+        request.contentAsByteArray.toString(Charsets.UTF_8)
+            .replace(Regex("\\s+"), "")
+            .replace(Regex("\\{"), "\\{\n\t")
+            .replace(Regex("\\}"), "\n\t\\}")
+            .replace(Regex(","), ",\n\t")
+
+    private fun formatResponse(response: ContentCachingResponseWrapper) =
+        response.contentAsByteArray.toString(Charsets.UTF_8)
+            .replace(Regex("\\s+"), "")
+            .replace(Regex("\\{"), "\\{\n\t")
+            .replace(Regex("\\}"), "\n\t\\}")
+            .replace(Regex(","), ",\n\t")
+
 }
