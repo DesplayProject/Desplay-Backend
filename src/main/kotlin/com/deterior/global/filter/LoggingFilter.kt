@@ -33,11 +33,12 @@ class LoggingFilter @Autowired constructor(
         val responseWrapper = ContentCachingResponseWrapper(response)
         val start = System.currentTimeMillis()
         filterChain.doFilter(requestWrapper, responseWrapper)
+
         val end = System.currentTimeMillis()
         val uuid = UUID.randomUUID().toString()
         MDC.put("requestId", uuid)
+        logUtils.saveLog(requestWrapper, responseWrapper, end - start, uuid)
         responseWrapper.copyBodyToResponse()
-        logUtils.printLog(requestWrapper, responseWrapper, end - start, uuid)
         MDC.remove("requestId")
     }
 }

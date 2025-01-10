@@ -11,6 +11,7 @@ import com.deterior.global.util.ApplicationProperties
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.io.File
 import java.util.*
 import kotlin.NoSuchElementException
@@ -28,7 +29,7 @@ class DBFileUploadService @Autowired constructor(
         val results = mutableListOf<ImageDto>()
         for (image in fileSaveDto.files) {
             val originFileName: String? = image.originalFilename
-            val saveFileName = createSaveFileName(originFileName)
+            val saveFileName = getSaveFileName(originFileName)
             val filePath = getFilePath(saveFileName)
             val savedImage = imageRepository.save(
                 Image(
@@ -37,12 +38,19 @@ class DBFileUploadService @Autowired constructor(
                     board = board,
                 )
             )
+            image.transferTo(File(filePath))
             results.add(savedImage.toDto(board.toDto()))
         }
         return results
     }
 
-    private fun createSaveFileName(fileName: String?): String {
+    @Transactional
+    override fun findSaveFilename(imageId: Long): String {
+        val entity = imageRepository.findById(imageId).get()
+        return entity.saveFileName
+    }
+
+    private fun getSaveFileName(fileName: String?): String {
         val ext = extractExt(fileName)
         val fileId: String = UUID.randomUUID().toString()
         return "${fileId}.${ext}"

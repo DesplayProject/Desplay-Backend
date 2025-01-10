@@ -5,4 +5,5 @@ import com.deterior.domain.image.dto.FileSaveDto
 
 interface FileUploadService {
     fun saveFile(fileSaveDto: FileSaveDto): List<ImageDto>
+    fun findSaveFilename(imageId: Long): String
 }

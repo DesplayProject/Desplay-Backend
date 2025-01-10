@@ -3,6 +3,7 @@ package com.deterior.test
 import com.deterior.domain.board.dto.BoardFindDto
 import com.deterior.domain.board.dto.BoardSearchCondition
 import com.deterior.domain.board.repository.BoardRepository
+import com.deterior.domain.image.service.FileUploadService
 import com.deterior.domain.member.dto.MemberContext
 import com.deterior.global.dto.AutoCompleteGetDto
 import com.deterior.global.service.AutoCompleteService
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.util.FileCopyUtils
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -31,7 +33,8 @@ class TestController @Autowired constructor(
     val initDBService: InitDBService,
     val boardRepository: BoardRepository,
     val autoCompleteService: AutoCompleteService,
-    val initRedisService: InitRedisService
+    val initRedisService: InitRedisService,
+    val imageService: FileUploadService
 ) {
     @PostMapping("/member/user")
     fun memberUser(@AuthenticationPrincipal memberContext: MemberContext): String {
@@ -41,8 +44,9 @@ class TestController @Autowired constructor(
     @GetMapping("/index")
     fun testIndex() = "test_index"
 
-    @GetMapping("/image")
-    fun testImage(filename: String): ResponseEntity<ByteArray> {
+    @GetMapping("/image/{imageId}")
+    fun testImage(@PathVariable imageId: Long): ResponseEntity<ByteArray> {
+        val filename = imageService.findSaveFilename(imageId)
         val path = "${applicationProperties.upload.path}${filename}"
         val image = File(path)
         val header = HttpHeaders()
