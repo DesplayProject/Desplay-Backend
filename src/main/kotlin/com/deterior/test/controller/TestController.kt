@@ -1,4 +1,4 @@
-package com.deterior.test
+package com.deterior.test.controller
 
 import com.deterior.domain.board.dto.BoardFindDto
 import com.deterior.domain.board.dto.BoardSearchCondition

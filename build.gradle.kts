@@ -34,9 +34,13 @@ dependencies {
     //orm
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
+    //log
+    implementation ("org.springframework.boot:spring-boot-starter-undertow")
+    implementation ("com.internetitem:logback-elasticsearch-appender:1.6")
+    implementation ("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:3.2.1")
+
     //database
     runtimeOnly("com.mysql:mysql-connector-j")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
     //mail
     implementation("org.springframework.boot:spring-boot-starter-mail")

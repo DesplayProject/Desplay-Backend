@@ -1,5 +1,6 @@
 package com.deterior.global.filter
 
+import com.deterior.global.log.CachedBodyHttpServletRequest
 import com.deterior.global.util.LogUtils
 import com.deterior.logger
 import jakarta.servlet.FilterChain
@@ -20,10 +21,9 @@ import org.springframework.web.util.ContentCachingResponseWrapper
 import java.util.*
 
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
-class LoggingFilter @Autowired constructor(
-    private val logUtils: LogUtils
-) : OncePerRequestFilter() {
+//@Order(Ordered.HIGHEST_PRECEDENCE)
+class LoggingFilter : OncePerRequestFilter() {
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -31,14 +31,13 @@ class LoggingFilter @Autowired constructor(
     ) {
         val requestWrapper = ContentCachingRequestWrapper(request)
         val responseWrapper = ContentCachingResponseWrapper(response)
-        val start = System.currentTimeMillis()
-        filterChain.doFilter(requestWrapper, responseWrapper)
-
-        val end = System.currentTimeMillis()
         val uuid = UUID.randomUUID().toString()
         MDC.put("requestId", uuid)
-        logUtils.saveLog(requestWrapper, responseWrapper, end - start, uuid)
+
+        requestWrapper.setAttribute("requestId", uuid)
+        filterChain.doFilter(requestWrapper, responseWrapper)
         responseWrapper.copyBodyToResponse()
+
         MDC.remove("requestId")
     }
 }
