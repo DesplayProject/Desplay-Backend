@@ -1,26 +1,17 @@
-package com.deterior.global
+package com.deterior.global.log
 
 import com.deterior.logger
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.web.util.ContentCachingRequestWrapper
-import org.springframework.web.util.ContentCachingResponseWrapper
 
-@Document(collection = "log")
-data class Log(
+data class LogDto(
     val uuid: String,
     val method: String,
     val url: String,
     val clientIp: String,
     val params: HashMap<String, String>,
-    val requestBody: String,
-    val responseBody: String,
+    val requestBody: Any,
+    val responseBody: Any,
     val processingTime: Long
 ) {
-    @Id
-    var id: String? = null
-        private set
-
     private val log = logger()
 
     fun printLog() {

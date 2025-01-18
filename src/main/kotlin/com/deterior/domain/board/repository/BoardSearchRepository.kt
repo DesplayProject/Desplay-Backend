@@ -6,5 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface BoardSearchRepository {
-    fun selectSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto>
+    fun mainSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto>
+    fun myLikeSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto>
+    fun myWriteSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto>
 }

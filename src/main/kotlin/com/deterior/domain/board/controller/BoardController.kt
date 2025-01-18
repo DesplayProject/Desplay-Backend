@@ -1,11 +1,12 @@
 package com.deterior.domain.board.controller
 
-import com.deterior.domain.board.dto.BoardWriteDto
-import com.deterior.domain.board.dto.BoardWriteRequest
-import com.deterior.domain.board.dto.BoardWriteResponse
+import com.deterior.domain.board.dto.*
 import com.deterior.domain.board.facade.BoardFacade
+import com.deterior.domain.board.service.BoardService
 import com.deterior.domain.member.dto.MemberContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
@@ -18,7 +19,8 @@ import org.springframework.web.multipart.MultipartFile
 @Controller
 @RequestMapping("/api")
 class BoardController @Autowired constructor(
-    val boardFacade: BoardFacade
+    private val boardFacade: BoardFacade,
+    private val boardService: BoardService
 ) {
     @PostMapping("/board/write")
     fun writeBoard(
@@ -28,5 +30,10 @@ class BoardController @Autowired constructor(
     ): ResponseEntity<BoardWriteResponse> {
         val response = boardFacade.writeBoard(boardWriteRequest.toWriteDto(files, memberContext))
         return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/board/search")
+    fun testSearch(condition: BoardSearchCondition, pageable: Pageable): ResponseEntity<Page<BoardFindDto>> {
+        return ResponseEntity.ok(boardService.selectSearch(condition, pageable))
     }
 }

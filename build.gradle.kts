@@ -34,9 +34,11 @@ dependencies {
     //orm
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
+    //log
+    implementation ("net.logstash.logback:logstash-logback-encoder:7.3")
+
     //database
     runtimeOnly("com.mysql:mysql-connector-j")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
     //mail
     implementation("org.springframework.boot:spring-boot-starter-mail")

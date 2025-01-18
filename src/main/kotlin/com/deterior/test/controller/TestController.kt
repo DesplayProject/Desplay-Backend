@@ -1,4 +1,4 @@
-package com.deterior.test
+package com.deterior.test.controller
 
 import com.deterior.domain.board.dto.BoardFindDto
 import com.deterior.domain.board.dto.BoardSearchCondition
@@ -44,20 +44,10 @@ class TestController @Autowired constructor(
     @GetMapping("/index")
     fun testIndex() = "test_index"
 
-    @GetMapping("/image/{imageId}")
-    fun testImage(@PathVariable imageId: Long): ResponseEntity<ByteArray> {
-        val filename = imageService.findSaveFilename(imageId)
-        val path = "${applicationProperties.upload.path}${filename}"
-        val image = File(path)
-        val header = HttpHeaders()
-        header.add("Content-Type", Files.probeContentType(image.toPath()))
-        return ResponseEntity(FileCopyUtils.copyToByteArray(image), header, HttpStatus.OK)
-    }
-
-    @GetMapping("/search")
-    fun testSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto> {
-        return boardRepository.selectSearch(condition, pageable)
-    }
+//    @GetMapping("/search")
+//    fun testSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto> {
+//        return boardRepository.selectSearch(condition, pageable)
+//    }
 
     @GetMapping("/auto-complete")
     fun testAutoComplete(keyword: String): ResponseEntity<AutoCompleteGetDto> {
