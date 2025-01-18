@@ -35,9 +35,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     //log
-    implementation ("org.springframework.boot:spring-boot-starter-undertow")
-    implementation ("com.internetitem:logback-elasticsearch-appender:1.6")
-    implementation ("dev.akkinoc.spring.boot:logback-access-spring-boot-starter:3.2.1")
+    implementation ("net.logstash.logback:logstash-logback-encoder:7.3")
 
     //database
     runtimeOnly("com.mysql:mysql-connector-j")

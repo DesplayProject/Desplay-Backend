@@ -25,7 +25,7 @@ class LoggerAspect {
     fun pointCut() {}
 
     @Around("pointCut()")
-    fun aopLogging(joinPoint: ProceedingJoinPoint): Any {
+    fun aopLogging(joinPoint: ProceedingJoinPoint): Any? {
         //현재 쓰레드의 request
         val request = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request
         val uuid = request.getAttribute("requestId") as String

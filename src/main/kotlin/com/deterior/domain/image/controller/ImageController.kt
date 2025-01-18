@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.util.FileCopyUtils
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import java.io.File
@@ -21,9 +22,9 @@ class ImageController @Autowired constructor(
     private val applicationProperties: ApplicationProperties,
     private val imageService: FileUploadService
 ) {
-    @GetMapping("/show")
-    fun showImage(@RequestBody imageShowRequest: ImageShowRequest): ResponseEntity<ByteArray> {
-        val filename = imageService.findSaveFilename(imageShowRequest.imageId)
+    @GetMapping("/show/{imageId}")
+    fun showImage(@PathVariable imageId: Long): ResponseEntity<ByteArray> {
+        val filename = imageService.findSaveFilename(imageId)
         val path = "${applicationProperties.upload.path}${filename}"
         val image = File(path)
         val header = HttpHeaders()

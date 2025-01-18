@@ -35,26 +35,25 @@ import org.springframework.util.StringUtils.*
 @Repository
 class BoardRepositoryImpl @Autowired constructor(
     private val jpaQueryFactory: JPAQueryFactory,
-    private val memberRepository: MemberRepository
 ) : BoardSearchRepository {
-    override fun selectSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto> {
-        when (condition.searchType) {
-            MAIN -> {
-                val content = mainSearch(condition, pageable)
-                return PageImpl(content, pageable, content.size.toLong())
-            }
-            MY_LIKE -> {
-                val content = myLikeSearch(condition, pageable)
-                return PageImpl(content, pageable, content.size.toLong())
-            }
-            MY_WRITE -> {
-                val content = myWriteSearch(condition, pageable)
-                return PageImpl(content, pageable, content.size.toLong())
-            }
-        }
-    }
+//    fun selectSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto> {
+//        when (condition.searchType) {
+//            MAIN -> {
+//                val content = mainSearch(condition, pageable)
+//                return PageImpl(content, pageable, content.size.toLong())
+//            }
+//            MY_LIKE -> {
+//                val content = myLikeSearch(condition, pageable)
+//                return PageImpl(content, pageable, content.size.toLong())
+//            }
+//            MY_WRITE -> {
+//                val content = myWriteSearch(condition, pageable)
+//                return PageImpl(content, pageable, content.size.toLong())
+//            }
+//        }
+//    }
 
-    fun mainSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto> {
+    override fun mainSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto> {
         val order = getOrder(condition)
         val queryResult = jpaQueryFactory
             .selectFrom(board)
@@ -81,7 +80,7 @@ class BoardRepositoryImpl @Autowired constructor(
         return boardToFindDto(queryResult)
     }
 
-    fun myLikeSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto> {
+    override fun myLikeSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto> {
         val order = getOrder(condition)
         val queryResult = jpaQueryFactory
             .selectFrom(scrap)
@@ -93,7 +92,7 @@ class BoardRepositoryImpl @Autowired constructor(
         return scrapToFindDto(queryResult)
     }
 
-    fun myWriteSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto> {
+    override fun myWriteSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto> {
         val order = getOrder(condition)
         val queryResult = jpaQueryFactory
             .selectFrom(board)
