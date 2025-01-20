@@ -17,6 +17,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @EnableWebSecurity
@@ -41,6 +44,7 @@ class SecurityConfig @Autowired constructor(
         return http
             .httpBasic { it.disable() }         //bearer를 사용하기 위함
             .csrf { it.disable() }              //토큰을 사용하므로 필요없음
+            .cors { it.configurationSource(corsConfigurationSource()) }
             .formLogin { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests{ it
@@ -70,4 +74,17 @@ class SecurityConfig @Autowired constructor(
     fun authenticationManager(
         authenticationConfiguration: AuthenticationConfiguration
     ): AuthenticationManager = authenticationConfiguration.authenticationManager
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.addAllowedOriginPattern("*")
+        configuration.addAllowedMethod("*")
+        configuration.addAllowedHeader("*")
+        configuration.allowCredentials = true
+        configuration.maxAge = 3600L
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
+    }
 }
