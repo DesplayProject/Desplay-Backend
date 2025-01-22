@@ -35,7 +35,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     //log
-    implementation ("net.logstash.logback:logstash-logback-encoder:7.3")
+    implementation ("net.logstash.logback:logstash-logback-encoder:7.4")
 
     //database
     runtimeOnly("com.mysql:mysql-connector-j")
@@ -78,6 +78,9 @@ dependencies {
 
     //guava
     implementation("com.google.guava:guava:11.0.2")
+
+    //swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 
     //kotest
     testImplementation("io.kotest:kotest-runner-junit5:5.4.2")

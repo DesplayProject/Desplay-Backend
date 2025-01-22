@@ -35,7 +35,10 @@ class SecurityConfig @Autowired constructor(
         "/api/mail/**",
         "/test/**",
         "error",
-        "/env"
+        "/env",
+        "/swagger-ui/**",
+        "/swagger-resources/**",
+        "/v3/api-docs/**"
     )
 
     @Bean
@@ -53,18 +56,6 @@ class SecurityConfig @Autowired constructor(
             }
             .addFilterBefore(JwtAuthenticationFilter(jwtProvider, jwtUtils), UsernamePasswordAuthenticationFilter::class.java)
             .build()
-    }
-
-    @Bean
-    //@Order(Ordered.HIGHEST_PRECEDENCE)
-    fun testSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        return http
-            .authorizeHttpRequests { it
-                .requestMatchers("/test/member/user").hasRole("USER")
-                .requestMatchers("/test/index").permitAll()
-            }
-            .build()
-        ;
     }
 
     @Bean
