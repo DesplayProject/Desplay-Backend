@@ -21,9 +21,10 @@ import java.nio.file.Files
 class ImageController @Autowired constructor(
     private val applicationProperties: ApplicationProperties,
     private val imageService: FileUploadService
-) {
+) : ImageControllerSwagger {
+
     @GetMapping("/show")
-    fun showImage(imageId: Long): ResponseEntity<ByteArray> {
+    override fun showImage(imageId: Long): ResponseEntity<ByteArray> {
         val filename = imageService.findSaveFilename(imageId)
         val path = "${applicationProperties.upload.path}${filename}"
         val image = File(path)
