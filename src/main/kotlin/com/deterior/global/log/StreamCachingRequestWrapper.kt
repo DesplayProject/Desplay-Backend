@@ -9,15 +9,15 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
 class StreamCachingRequestWrapper(request: HttpServletRequest) : HttpServletRequestWrapper(request) {
-    private var contents = ByteArrayOutputStream()
+    private var cachedBody = ByteArrayOutputStream()
 
     override fun getInputStream(): ServletInputStream {
-        IOUtils.copy(super.getInputStream(), contents)
+        IOUtils.copy(super.getInputStream(), cachedBody)
 
         return object : ServletInputStream() {
-            private var buffer = ByteArrayInputStream(contents.toByteArray())
-            override fun read(): Int = buffer.read()
-            override fun isFinished(): Boolean = buffer.available() == 0
+            private var body = ByteArrayInputStream(cachedBody.toByteArray())
+            override fun read(): Int = body.read()
+            override fun isFinished(): Boolean = body.available() == 0
             override fun isReady(): Boolean = true
             override fun setReadListener(listener: ReadListener?) =
                 throw java.lang.RuntimeException("Not implemented")
