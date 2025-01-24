@@ -66,7 +66,7 @@ class MemberControllerTest (
             val httpHeader = HttpHeaders()
             httpHeader.setBearerAuth(jwtToken!!.accessToken)
             Then("토튼이 반환되어 다른 url에 접근이 가능하다") {
-                val url: String = "${domain}:${port}/test/member/user"
+                val url = "${domain}:${port}/test/member/user"
                 val response = testRestTemplate.postForEntity(url, HttpEntity<HttpHeaders>(httpHeader), String::class.java)
                 response.statusCode shouldBe HttpStatus.OK
             }

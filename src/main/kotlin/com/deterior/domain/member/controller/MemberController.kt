@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/api/member")
 class MemberController @Autowired constructor(
     private val memberService: MemberService
-) {
+) : MemberControllerSwagger {
     @PostMapping("/sign-in")
-    fun signIn(
+    override fun signIn(
         @RequestBody signInRequest: SignInRequest
     ): ResponseEntity<JwtToken> {
         val jwtToken = memberService.signIn(signInRequest)
@@ -25,7 +25,7 @@ class MemberController @Autowired constructor(
     }
 
     @PostMapping("/sign-up")
-    fun signUp(
+    override fun signUp(
         @RequestBody signUpRequest: SignUpRequest
     ): ResponseEntity<SignUpResponse> {
         val signUpResponse = memberService.signUp(signUpRequest)
@@ -33,7 +33,7 @@ class MemberController @Autowired constructor(
     }
 
     @PostMapping("/reissue")
-    fun reissueToken(
+    override fun reissueToken(
         @RequestBody reissueTokenRequest: ReissueTokenRequest
     ): ResponseEntity<JwtToken> {
         val jwtToken = memberService.reissue(reissueTokenRequest)
@@ -41,7 +41,7 @@ class MemberController @Autowired constructor(
     }
 
     @PostMapping("/reset-password")
-    fun resetPassword(
+    override fun resetPassword(
         @RequestBody passwordResetRequest: PasswordResetRequest
     ): ResponseEntity<PasswordResetResponse> {
         val response = memberService.resetPassword(passwordResetRequest)

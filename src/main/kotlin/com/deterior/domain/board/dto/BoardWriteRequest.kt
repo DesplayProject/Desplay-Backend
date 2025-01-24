@@ -16,7 +16,7 @@ data class BoardWriteRequest(
     @Schema(description = "태그들", required = true)
     val tags: List<String>,
 
-    @Schema(description = "상품들 [pair 형식으로 작성 {first:상품명, second:상품 링크}]", required = true)
+    @Schema(description = "상품들 [pair 형식으로 작성 예){first:상품명, second:상품 링크}]", required = true)
     val items: List<Pair<String, String>>
 ) {
     fun toWriteDto(
