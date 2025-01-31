@@ -79,12 +79,12 @@ class InitDBService @Autowired constructor(
         return follows
     }
 
-    private fun fillScraps(members: MutableList<Member>, boards: MutableList<Board>): List<Scrap> {
+    fun fillScraps(members: MutableList<Member>, boards: MutableList<Board>): List<Scrap> {
         val scraps = mutableListOf<Scrap>()
-        for (i in 0..19) {
+        for (i in 0..9) {
             val scrap = Scrap(
-                member = members[i / 2],
-                board = boards[i / 2],
+                member = members[i],
+                board = boards[i],
             )
             entityManager.persist(scrap)
             scraps.add(scrap)
@@ -92,7 +92,7 @@ class InitDBService @Autowired constructor(
         return scraps
     }
 
-    private fun fillBoards(members: List<Member>): MutableList<Board> {
+    fun fillBoards(members: List<Member>): MutableList<Board> {
         val boards = mutableListOf<Board>()
         for (i in 0..49) {
             val board = Board(

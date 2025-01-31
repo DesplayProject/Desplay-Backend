@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
 
 @Controller
 @RequestMapping("/api")
@@ -39,7 +40,7 @@ class BoardController @Autowired constructor(
     }
 
     @GetMapping("/board/search")
-    override fun testSearch(condition: BoardSearchCondition, pageable: Pageable): ResponseEntity<Page<BoardFindDto>> {
+    override fun boardSearch(condition: BoardSearchCondition, pageable: Pageable): ResponseEntity<Page<BoardFindDto>> {
         return ResponseEntity.ok(boardService.selectSearch(condition, pageable))
     }
 }

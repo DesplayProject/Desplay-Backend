@@ -2,13 +2,12 @@ package com.deterior.service
 
 import com.deterior.DatabaseCleanup
 import com.deterior.domain.scrap.dto.ScrapDto
-import com.deterior.domain.scrap.dto.ScrapSaveDto
+import com.deterior.domain.scrap.dto.ScrapHandleDto
 import com.deterior.domain.scrap.service.ScrapService
 import com.deterior.domain.board.Board
 import com.deterior.domain.board.repository.BoardRepository
 import com.deterior.domain.member.Member
 import com.deterior.domain.member.repository.MemberRepository
-import com.deterior.domain.scrap.dto.ScrapUndoDto
 import com.deterior.domain.scrap.repository.ScrapRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -55,9 +54,9 @@ class ScrapServiceImplTest @Autowired constructor(
             //board[2]: member[2], member[3]
             for (i in 0..3) {
                 val likeDto = scrapService.pushLike(
-                    ScrapSaveDto(
-                        memberDto = members[i].toDto(),
-                        boardDto = boards[i / 2].toDto()
+                    ScrapHandleDto(
+                        username = members[i].username,
+                        boardId = boards[i / 2].id!!
                     )
                 )
                 savedLikes.add(likeDto)
@@ -75,8 +74,9 @@ class ScrapServiceImplTest @Autowired constructor(
         }
         When("Scrap를 취소한다") {
             for (i in 0..3) {
-                scrapService.undoLike(ScrapUndoDto(
-                    scrapId = i + 1L
+                scrapService.undoLike(ScrapHandleDto(
+                    boardId = boards[i / 2].id!!,
+                    username = members[i].username,
                 ))
                 Then("취소가 성공한다") {
                     scrapRepository.findAll().size shouldBe (3 - i)

@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 class MailController @Autowired constructor(
     private val mailService: MailService,
     private val mailCheckDao: MailCheckDao
-) {
+) : MailControllerSwagger {
     @PostMapping("/auth-send")
-    fun sendAuthMail(
+    override fun sendAuthMail(
         @RequestBody mailSendRequest: MailSendRequest
     ): ResponseEntity<MailSendResponse> {
         val mailDto = MailDto(
@@ -35,7 +35,7 @@ class MailController @Autowired constructor(
     }
 
     @PostMapping("/auth-check")
-    fun checkAuthMail(
+    override fun checkAuthMail(
         @RequestBody mailCheckRequest: MailCheckRequest
     ): ResponseEntity<MailCheckResponse> {
         val mail = mailCheckRequest.receiverMail

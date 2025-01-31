@@ -36,29 +36,12 @@ import org.springframework.util.StringUtils.*
 class BoardRepositoryImpl @Autowired constructor(
     private val jpaQueryFactory: JPAQueryFactory,
 ) : BoardSearchRepository {
-//    fun selectSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto> {
-//        when (condition.searchType) {
-//            MAIN -> {
-//                val content = mainSearch(condition, pageable)
-//                return PageImpl(content, pageable, content.size.toLong())
-//            }
-//            MY_LIKE -> {
-//                val content = myLikeSearch(condition, pageable)
-//                return PageImpl(content, pageable, content.size.toLong())
-//            }
-//            MY_WRITE -> {
-//                val content = myWriteSearch(condition, pageable)
-//                return PageImpl(content, pageable, content.size.toLong())
-//            }
-//        }
-//    }
-
     override fun mainSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto> {
         val order = getOrder(condition)
         val queryResult = jpaQueryFactory
             .selectFrom(board)
             .join(member).on(board.member.id.eq(member.id))
-            .join(item).on(item.board.id.eq(board.id))
+            .leftJoin(item).on(item.board.id.eq(board.id))
             .where(
                 containTitle(condition.keyword)?.or(
                     containItem(condition.keyword)

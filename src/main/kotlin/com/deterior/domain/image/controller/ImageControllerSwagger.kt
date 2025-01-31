@@ -8,6 +8,6 @@ import org.springframework.http.ResponseEntity
 @Tag(name = "이미지 API")
 interface ImageControllerSwagger {
 
-    @Operation(summary = "이미지 받아오기", description = "이미지 ID로 받아옴")
+    @Operation(summary = "이미지 받아오기 \uD83D\uDD12", description = "이미지 ID로 받아옴")
     fun showImage(@Parameter(description = "이미지 ID", required = true) imageId: Long): ResponseEntity<ByteArray>
 }

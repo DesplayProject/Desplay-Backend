@@ -20,14 +20,14 @@ import org.springframework.web.multipart.MultipartFile
 @Tag(name = "게시글 API")
 interface BoardControllerSwagger {
 
-    @Operation(summary = "게시글 작성", description = "form-data로 전송, files는 DTO와 별개")
+    @Operation(summary = "게시글 작성 \uD83D\uDD12", description = "form-data로 전송, files는 DTO와 별개")
     fun writeBoard(
         memberContext: MemberContext,
         @Schema(description = "이미지 파일") files: List<MultipartFile>,
         boardWriteRequest: BoardWriteRequest
     ): ResponseEntity<BoardWriteResponse>
 
-    @Operation(summary = "메인 화면 게시글 검색", description = "쿼리 파라미터로 전송",
+    @Operation(summary = "메인 화면 게시글 검색 \uD83D\uDD12", description = "쿼리 파라미터로 전송",
             parameters = [
                 Parameter(name = "tags", description = "태그들", required = false),
                 Parameter(name = "keyword", description = "검색 키워드", required = true),
@@ -36,8 +36,8 @@ interface BoardControllerSwagger {
                 Parameter(name = "searchTypes", description = "검색 타입 [MAIN: 메인 화면 검색, MY_LIKE: 내가 스크랩 한 게시물 검색, MY_WRITE: 내가 작성한 게시물 검색]", required = true),
             ]
         )
-    fun testSearch(
+    fun boardSearch(
         condition: BoardSearchCondition,
-        @Parameter(description = "페이지 설정", required = true) pageable: Pageable
+        @Parameter(description = "페이지 설정 \uD83D\uDD12", required = true) pageable: Pageable
     ): ResponseEntity<Page<BoardFindDto>>
 }
