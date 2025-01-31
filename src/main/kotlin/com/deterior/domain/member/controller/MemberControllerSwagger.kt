@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 
-@Tag(name = "인증 API")
+@Tag(name = "인증 API", description = "인증이 필요한 다른 API에 접근할 때는 이 API를 이용하여 access token을 얻어 Authorization 헤더에 Bearer 토큰으로 추가해야 합니다.")
 interface MemberControllerSwagger {
 
     @Operation(summary = "로그인")

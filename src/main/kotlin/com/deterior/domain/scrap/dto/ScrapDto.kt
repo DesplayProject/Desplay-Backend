@@ -6,4 +6,10 @@ import com.deterior.domain.member.dto.MemberDto
 data class ScrapDto(
     val memberDto: MemberDto,
     val boardDto: BoardDto
-)
+) {
+    fun toResponse() = ScrapResponse(
+        scrapCount = boardDto.scrapCount,
+        username = memberDto.username,
+        title = boardDto.title,
+    )
+}

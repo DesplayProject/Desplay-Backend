@@ -22,7 +22,6 @@ class ImageController @Autowired constructor(
     private val applicationProperties: ApplicationProperties,
     private val imageService: FileUploadService
 ) : ImageControllerSwagger {
-
     @GetMapping("/show")
     override fun showImage(imageId: Long): ResponseEntity<ByteArray> {
         val filename = imageService.findSaveFilename(imageId)

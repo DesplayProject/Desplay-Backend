@@ -2,12 +2,9 @@ package com.deterior.domain.scrap.service
 
 import com.deterior.domain.scrap.Scrap
 import com.deterior.domain.scrap.dto.ScrapDto
-import com.deterior.domain.scrap.dto.ScrapSaveDto
-import com.deterior.domain.scrap.dto.ScrapUndoDto
+import com.deterior.domain.scrap.dto.ScrapHandleDto
 import com.deterior.domain.scrap.repository.ScrapRepository
-import com.deterior.domain.board.dto.BoardDto
 import com.deterior.domain.board.repository.BoardRepository
-import com.deterior.domain.member.dto.MemberDto
 import com.deterior.domain.member.repository.MemberRepository
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,26 +18,23 @@ class ScrapServiceImpl @Autowired constructor(
 ) : ScrapService {
 
     @Transactional
-    override fun pushLike(likeSaveDto: ScrapSaveDto): ScrapDto {
-        val board = findBoard(likeSaveDto.boardDto)
-        val member = findMember(likeSaveDto.memberDto)
+    override fun pushLike(scrapHandleDto: ScrapHandleDto): ScrapDto {
+        val board = boardRepository.findById(scrapHandleDto.boardId).get()
+        val member = memberRepository.findByUsername(scrapHandleDto.username)
         val scrap = scrapRepository.save(
             Scrap(
                 board = board,
-                member = member
+                member = member!!
             )
         )
         return scrap.toDto()
     }
 
     @Transactional
-    override fun undoLike(scrapUndoDto: ScrapUndoDto) {
-        val scrap = scrapRepository.findById(scrapUndoDto.scrapId).get()
+    override fun undoLike(scrapHandleDto: ScrapHandleDto): ScrapDto {
+        val scrap = scrapRepository.findScrapByUsernameAndBoardId(scrapHandleDto)
         scrap.board.scrapCount--
-        scrapRepository.deleteById(scrapUndoDto.scrapId)
+        scrapRepository.deleteById(scrap.id!!)
+        return scrap.toDto()
     }
-
-    private fun findBoard(boardDto: BoardDto) = boardRepository.findById(boardDto.boardId).get()
-
-    private fun findMember(memberDto: MemberDto) = memberRepository.findById(memberDto.memberId).get()
 }
