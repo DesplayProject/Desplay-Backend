@@ -27,7 +27,7 @@ jobs:
           mkdir -p ./src/main/resources
           cd ./src/main/resources
           touch ./application.yml
-          echo "${{ secrets.APPLICATION }}" > ./application.yml
+          echo "${{ secrets.HOME_SERVER_APPLICATION }}" > ./application.yml
       
       - name: Cache Gradle packages
         uses: actions/cache@v2
