@@ -56,6 +56,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           
+      - name: Cross builder
+        run: docker buildx create --name cross-builder --driver docker-container --use
+          
       - name: Build Docker
         run: docker buildx build --platform=linux/amd64,linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/desplay .
       - name: Push Docker
