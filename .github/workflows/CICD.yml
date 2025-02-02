@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04-arm64
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Install JDK 17
@@ -19,6 +19,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          architecture: aarch64
           server-id: github 
           settings-path: ${{ github.workspace }}
 
