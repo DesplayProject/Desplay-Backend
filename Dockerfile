@@ -1,4 +1,4 @@
-FROM arm64v8/adoptopenjdk:17-jdk-hotspot
+FROM openjdk:17-jdk
 RUN chmod 755 /file-save
 RUN mkdir -p /file-save
 ARG JAR_FILE=build/libs/*.jar
