@@ -57,7 +57,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           
       - name: Build Docker
-        run: docker buildx build --platform linux/arm64/v8 -t ${{ secrets.DOCKERHUB_USERNAME }}/desplay .
+        run: docker buildx build --platform=linux/amd64,linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/desplay .
       - name: Push Docker
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/desplay:latest
 
