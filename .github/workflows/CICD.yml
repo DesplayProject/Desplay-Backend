@@ -60,7 +60,7 @@ jobs:
         run: docker buildx create --name cross-builder --driver docker-container --use
           
       - name: Build Docker
-        run: docker buildx build --platform=linux/amd64,linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/desplay .
+        run: docker buildx build --platform=linux/amd64,linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/desplay --push .
       - name: Push Docker
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/desplay:latest
 
