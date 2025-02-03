@@ -5,4 +5,5 @@ import com.deterior.domain.scrap.dto.ScrapHandleDto
 
 interface ScrapSearchRepository {
     fun findScrapByUsernameAndBoardId(scrapHandleDto: ScrapHandleDto): Scrap
+    fun isScrapExists(scrapHandleDto: ScrapHandleDto): Boolean
 }

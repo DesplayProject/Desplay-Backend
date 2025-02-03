@@ -54,6 +54,11 @@ class ScrapRepositoryTest @Autowired constructor(
         result.board.title shouldBe "i hope this test will be successful"
     }
 
+    test("존재하지 않는 scarp 조회") {
+        val scrapUndoDto = ScrapHandleDto(1, "kanye")
+        scrapRepository.isScrapExists(scrapUndoDto) shouldBe false
+    }
+
     //0,1: 0
     //2,3: 1
     //4,5: 2

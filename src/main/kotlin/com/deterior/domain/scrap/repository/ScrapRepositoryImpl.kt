@@ -27,5 +27,17 @@ class ScrapRepositoryImpl @Autowired constructor(
             .fetch()
         return queryResult[0]
     }
+
+    override fun isScrapExists(scrapHandleDto: ScrapHandleDto): Boolean {
+        val queryResult = jpaQueryFactory
+            .select(scrap)
+            .from(scrap)
+            .where(
+                scrap.member.username.eq(scrapHandleDto.username).and(
+                    board.id.eq(scrapHandleDto.boardId)
+                ))
+            .fetch()
+        return queryResult.size != 0
+    }
 }
 //where username := username and id := id

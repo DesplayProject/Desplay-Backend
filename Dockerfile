@@ -1,4 +1,4 @@
-FROM amazoncorretto:17-alpine-jdk
+FROM openjdk:17-jdk
 RUN mkdir -p /file-save
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar

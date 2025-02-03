@@ -53,7 +53,7 @@ class ScrapServiceImplTest @Autowired constructor(
             //board[0]: member[0], member[1]
             //board[2]: member[2], member[3]
             for (i in 0..3) {
-                val likeDto = scrapService.pushLike(
+                val likeDto = scrapService.doLike(
                     ScrapHandleDto(
                         username = members[i].username,
                         boardId = boards[i / 2].id!!
@@ -74,7 +74,7 @@ class ScrapServiceImplTest @Autowired constructor(
         }
         When("Scrap를 취소한다") {
             for (i in 0..3) {
-                scrapService.undoLike(ScrapHandleDto(
+                scrapService.doLike(ScrapHandleDto(
                     boardId = boards[i / 2].id!!,
                     username = members[i].username,
                 ))
