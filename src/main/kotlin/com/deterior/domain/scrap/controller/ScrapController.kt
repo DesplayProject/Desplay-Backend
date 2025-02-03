@@ -14,16 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 class ScrapController @Autowired constructor(
     private val scrapService: ScrapService
-) {
+) : ScrapControllerSwagger {
     @PostMapping("/scrap/push")
-    fun pushScrap(@RequestBody scrapRequest: ScrapRequest): ResponseEntity<ScrapResponse> {
-        val dto = scrapService.pushLike(scrapRequest.toHandleDto())
-        return ResponseEntity.ok(dto.toResponse())
-    }
-
-    @PostMapping("/scrap/undo")
-    fun undoScrap(@RequestBody scrapRequest: ScrapRequest): ResponseEntity<ScrapResponse> {
-        val dto = scrapService.undoLike(scrapRequest.toHandleDto())
+    override fun pushScrap(@RequestBody scrapRequest: ScrapRequest): ResponseEntity<ScrapResponse> {
+        val dto = scrapService.doLike(scrapRequest.toHandleDto())
         return ResponseEntity.ok(dto.toResponse())
     }
 }

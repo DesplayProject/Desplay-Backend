@@ -18,7 +18,11 @@ class ScrapServiceImpl @Autowired constructor(
 ) : ScrapService {
 
     @Transactional
-    override fun pushLike(scrapHandleDto: ScrapHandleDto): ScrapDto {
+    override fun doLike(scrapHandleDto: ScrapHandleDto): ScrapDto =
+        scrapRepository.isScrapExists(scrapHandleDto)
+            .let { if (it) return undoLike(scrapHandleDto) else return pushLike(scrapHandleDto) }
+
+    private fun pushLike(scrapHandleDto: ScrapHandleDto): ScrapDto {
         val board = boardRepository.findById(scrapHandleDto.boardId).get()
         val member = memberRepository.findByUsername(scrapHandleDto.username)
         val scrap = scrapRepository.save(
@@ -30,8 +34,7 @@ class ScrapServiceImpl @Autowired constructor(
         return scrap.toDto()
     }
 
-    @Transactional
-    override fun undoLike(scrapHandleDto: ScrapHandleDto): ScrapDto {
+    private fun undoLike(scrapHandleDto: ScrapHandleDto): ScrapDto {
         val scrap = scrapRepository.findScrapByUsernameAndBoardId(scrapHandleDto)
         scrap.board.scrapCount--
         scrapRepository.deleteById(scrap.id!!)
