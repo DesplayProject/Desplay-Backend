@@ -23,7 +23,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container:3306/deterior?allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      - PROFILES=green-server
+      - SPRING_PROFILES_ACTIVE=green-server
       - ENV=green
   redis:
     image: redis:latest
