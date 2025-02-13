@@ -9,7 +9,7 @@ class ServerController {
     @Value("\${spring.profiles.active}")
     private lateinit var env: String
 
-    @GetMapping("/env")
+    @GetMapping("/api/env")
     fun env(): String {
         return if (env.endsWith("-server")) env.removeSuffix("-server") else env
     }

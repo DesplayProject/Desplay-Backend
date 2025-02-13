@@ -35,9 +35,10 @@ class SecurityConfig @Autowired constructor(
         "/api/mail/**",
         "/test/**",
         "error",
-        "/env",
+        "/api/env",
         "/swagger-ui/**",
         "/swagger-resources/**",
+        "/api/swagger",
         "/v3/api-docs/**"
     )
 
