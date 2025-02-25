@@ -49,7 +49,8 @@ class LoggerAspect {
             responseBody = objectMapper.writeValueAsString(response),
             processingTime = processingTime,
         )
-        log.info(objectMapper.writeValueAsString(logDto))
+        val str = formatLog(objectMapper.writeValueAsString(logDto))
+        log.info(str)
         return result
     }
 
@@ -61,17 +62,9 @@ class LoggerAspect {
         return params
     }
 
-    private fun formatRequest(request: ContentCachingRequestWrapper): String =
-        request.contentAsByteArray.toString(Charsets.UTF_8)
-            .replace(Regex("\\s+"), "")
-            .replace(Regex("\\{"), "\\{\n\t")
-            .replace(Regex("\\}"), "\n\t\\}")
-            .replace(Regex(","), ",\n\t")
-
-    private fun formatResponse(response: ContentCachingResponseWrapper) =
-        response.contentAsByteArray.toString(Charsets.UTF_8)
-            .replace(Regex("\\s+"), "")
-            .replace(Regex("\\{"), "\\{\n\t")
-            .replace(Regex("\\}"), "\n\t\\}")
-            .replace(Regex(","), ",\n\t")
+    private fun formatLog(str: String): String =
+        str.split(",")
+            .map { it.replace("\\", "") }
+            .map { if(it.length > 150) it.substring(0, 150) + "..." else it }
+            .joinToString(",\n")
 }

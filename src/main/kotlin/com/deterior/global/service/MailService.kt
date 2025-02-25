@@ -17,7 +17,7 @@ class MailService @Autowired constructor(
     private val javaMailSender: JavaMailSender,
     private val mailCheckDao: MailCheckDao,
     private val applicationProperties: ApplicationProperties
-){
+) {
     fun sendMail(mailDto: MailDto) {
         val mailType = mailDto.type
         val receiverMail = mailDto.receiverMail
