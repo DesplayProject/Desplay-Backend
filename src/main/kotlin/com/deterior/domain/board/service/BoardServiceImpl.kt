@@ -56,4 +56,7 @@ class BoardServiceImpl @Autowired constructor(
             }
         }
     }
+
+    @Transactional
+    override fun getBoardDetail(boardId: Long): BoardFindDto = boardRepository.getBoard(boardId)
 }

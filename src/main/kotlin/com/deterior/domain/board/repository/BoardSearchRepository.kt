@@ -9,4 +9,5 @@ interface BoardSearchRepository {
     fun mainSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto>
     fun myLikeSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto>
     fun myWriteSearch(condition: BoardSearchCondition, pageable: Pageable): List<BoardFindDto>
+    fun getBoard(boardId: Long): BoardFindDto
 }

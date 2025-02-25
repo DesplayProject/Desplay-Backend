@@ -15,10 +15,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestPart
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
 
@@ -42,5 +39,10 @@ class BoardController @Autowired constructor(
     @GetMapping("/board/search")
     override fun boardSearch(condition: BoardSearchCondition, pageable: Pageable): ResponseEntity<Page<BoardFindDto>> {
         return ResponseEntity.ok(boardService.selectSearch(condition, pageable))
+    }
+
+    @GetMapping("/board/{boardId}")
+    override fun boardDetail(@PathVariable boardId: Long): ResponseEntity<BoardFindDto> {
+        return ResponseEntity.ok(boardService.getBoardDetail(boardId))
     }
 }

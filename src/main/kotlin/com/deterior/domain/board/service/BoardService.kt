@@ -11,4 +11,5 @@ interface BoardService {
     fun saveBoard(boardSaveDto: BoardSaveDto): BoardDto
     fun findBoardById(id: Long): BoardDto
     fun selectSearch(condition: BoardSearchCondition, pageable: Pageable): Page<BoardFindDto>
+    fun getBoardDetail(boardId: Long): BoardFindDto
 }

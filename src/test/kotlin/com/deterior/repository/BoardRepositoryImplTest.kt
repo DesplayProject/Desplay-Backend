@@ -107,6 +107,13 @@ class BoardRepositoryImplTest @Autowired constructor(
 
     @Test
     @Transactional
+    fun `게시글 상제 조회`() {
+        val result = boardRepository.getBoard(1)
+        println(result)
+    }
+
+    @Test
+    @Transactional
     fun `좋아요한 게시물 조회`() {
         val userId: Long = 1
         val result = jpaQueryFactory
