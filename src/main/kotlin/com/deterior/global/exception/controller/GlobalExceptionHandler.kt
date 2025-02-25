@@ -46,7 +46,7 @@ class GlobalExceptionHandler {
             errorCode = exception.errorCode,
             values = listOf(exception.value)
         )
-        return ResponseEntity(errorResponse, HttpStatus.FORBIDDEN)
+        return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
     }
 
     @ExceptionHandler(ImageException::class)

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import java.io.File
 import java.nio.file.Files
 
@@ -23,7 +24,9 @@ class ImageController @Autowired constructor(
     private val imageService: FileUploadService
 ) : ImageControllerSwagger {
     @GetMapping("/show")
-    override fun showImage(imageId: Long): ResponseEntity<ByteArray> {
+    override fun showImage(
+        @RequestParam imageId: Long
+    ): ResponseEntity<ByteArray> {
         val filename = imageService.findSaveFilename(imageId)
         val path = "${applicationProperties.upload.path}${filename}"
         val image = File(path)

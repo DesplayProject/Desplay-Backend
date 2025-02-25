@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.multipart.MultipartFile
 
@@ -38,6 +39,9 @@ interface BoardControllerSwagger {
         )
     fun boardSearch(
         condition: BoardSearchCondition,
-        @Parameter(description = "페이지 설정 \uD83D\uDD12", required = true) pageable: Pageable
+        @Parameter(description = "페이지 설정", required = true) pageable: Pageable
     ): ResponseEntity<Page<BoardFindDto>>
+
+    @Operation(summary = "게시글 상세보기 \uD83D\uDD12", description = "boardId에 해당하는 게시글 상세정보")
+    fun boardDetail(@Parameter(description = "게시글 상제보기", required = true) boardId: Long): ResponseEntity<BoardFindDto>
 }

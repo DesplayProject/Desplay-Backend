@@ -87,6 +87,17 @@ class BoardRepositoryImpl @Autowired constructor(
         return boardToFindDto(queryResult)
     }
 
+    override fun getBoard(boardId: Long): BoardFindDto {
+        val queryResult = jpaQueryFactory
+            .selectFrom(board)
+            .where(board.id.eq(boardId))
+            .join(member).on(board.member.id.eq(member.id))
+            .leftJoin(item).on(item.board.id.eq(board.id))
+            .limit(1)
+            .fetch()
+        return queryResult[0].toFindDto()
+    }
+
     private fun scrapToFindDto(scraps: List<Scrap>): List<BoardFindDto> = scraps
         .map { it -> BoardFindDto(
             boardId = it.board.id!!,

@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody
 @Tag(name = "자동완성 API")
 interface AutoCompleteSwagger {
 
-    @Operation(summary = "자동완성 문자열 가져오기", description = "키워드의 단어로 시작하는 문자열들을 검색량 순으로 가져옵니다.")
+    @Operation(summary = "자동완성 문자열 가져오기 \uD83D\uDD12", description = "키워드의 단어로 시작하는 문자열들을 검색량 순으로 가져옵니다.")
     fun getAutoCompleteString(input: String): ResponseEntity<AutoCompleteGetResponse>
 
-    @Operation(summary = "자동완성 문자열 추가", description = "자동완성될 문자열을 추가합니다.")
+    @Operation(summary = "자동완성 문자열 추가 \uD83D\uDD12", description = "자동완성될 문자열을 추가합니다.")
     fun updateAutoCompleteString(@Parameter(description = "추가할 문자열", required = true) input: String): ResponseEntity<AutoCompleteUpdateResponse>
 }
