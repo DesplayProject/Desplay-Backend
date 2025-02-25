@@ -18,21 +18,20 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/api/auto-complete")
 class AutoCompleteController @Autowired constructor(
     private val autoCompleteService: AutoCompleteService
-) {
+) : AutoCompleteSwagger {
     @GetMapping("/get-string/{input}")
-    fun getAutoCompleteString(
+    override fun getAutoCompleteString(
         @PathVariable input: String,
-        //@RequestBody autoCompleteGetRequest: AutoCompleteGetRequest
     ): ResponseEntity<AutoCompleteGetResponse> {
         val result = autoCompleteService.getAutoComplete(input)
         return ResponseEntity.ok(result.toResponse())
     }
 
     @PostMapping("/update-string")
-    fun updateAutoCompleteString(
-        @RequestBody autoCompleteUpdateRequest: AutoCompleteUpdateRequest
+    override fun updateAutoCompleteString(
+        input: String
     ): ResponseEntity<AutoCompleteUpdateResponse> {
-        autoCompleteService.updateAutoComplete(autoCompleteUpdateRequest.input)
-        return ResponseEntity.ok(autoCompleteUpdateRequest.toResponse())
+        autoCompleteService.updateAutoComplete(input)
+        return ResponseEntity.ok(AutoCompleteUpdateResponse(input))
     }
 }

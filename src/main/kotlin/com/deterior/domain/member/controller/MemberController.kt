@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 class MemberController @Autowired constructor(
     private val memberService: MemberService
 ) : MemberControllerSwagger {
+
     @PostMapping("/sign-in")
     override fun signIn(
         @RequestBody signInRequest: SignInRequest
