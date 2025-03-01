@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -24,7 +25,7 @@ class MemberServiceImpl @Autowired constructor(
     private val passwordEncoder: PasswordEncoder,
     private val refreshTokenRepository: RefreshTokenRepository,
     private val jwtUtils: JwtUtils,
-    private val jwtProvider: JwtProvider
+    private val userDetailsService: UserDetailsService
 ) : MemberService {
     override fun signIn(signInRequest: SignInRequest): JwtToken {
         val authenticationToken = UsernamePasswordAuthenticationToken(signInRequest.username, signInRequest.password)
@@ -54,17 +55,15 @@ class MemberServiceImpl @Autowired constructor(
     }
 
     override fun reissue(reissueTokenRequest: ReissueTokenRequest): JwtToken {
-        if (!jwtUtils.validateToken(reissueTokenRequest.refreshToken)) {
-            throw InvalidJwtTokenException(ErrorCode.INVALID_TOKEN.message, reissueTokenRequest.refreshToken, ErrorCode.INVALID_TOKEN)
+        val refreshToken = reissueTokenRequest.refreshToken
+        if (!jwtUtils.validateToken(refreshToken) || jwtUtils.isReissueRefreshToken(refreshToken)) {
+            throw InvalidJwtTokenException(ErrorCode.INVALID_TOKEN.message, refreshToken, ErrorCode.INVALID_TOKEN)
         }
-        val authentication = jwtProvider.authenticate(reissueTokenRequest.accessToken)
-        val refreshToken = refreshTokenRepository.findById(authentication.name).orElseThrow { RuntimeException("로그아웃된 사용자") }
-        if (refreshToken.value != reissueTokenRequest.refreshToken) {
-            throw InConsistentJwtTokenException(ErrorCode.INCONSISTENT_TOKEN.message, reissueTokenRequest.refreshToken, ErrorCode.INCONSISTENT_TOKEN)
-        }
-        val jwtToken = jwtUtils.generateToken(authentication)
-        refreshTokenRepository.save(jwtToken.toRefreshToken(authentication))
-        return jwtToken
+
+        val username = jwtUtils.parseClaims(refreshToken).subject
+        val principal = userDetailsService.loadUserByUsername(username)
+        val accessToken = jwtUtils.createAccessToken(principal.username, principal.authorities)
+        return JwtToken("Bearer", accessToken, refreshToken)
     }
 
     override fun resetPassword(passwordResetRequest: PasswordResetRequest): PasswordResetResponse {
