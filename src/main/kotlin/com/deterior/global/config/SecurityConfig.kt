@@ -32,6 +32,7 @@ class SecurityConfig @Autowired constructor(
         "/api/member/sign-in",
         "/api/member/sign-up",
         "/api/member/reset-password",
+        "api/member/reissue",
         "/api/mail/**",
         "/test/**",
         "error",

@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.SignatureException
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.stereotype.Component
 import org.springframework.web.util.ContentCachingRequestWrapper
 import java.security.Key
@@ -34,8 +35,8 @@ class JwtUtils @Autowired constructor(
 
     fun generateToken(authentication: Authentication): JwtToken {
         //jwt 쿠키에 저장되는 노출도가 높은 정보이므로 payload에는 민감한 개인정보대신 권한정보를 넣는다.
-        val accessToken = createAccessToken(authentication)
-        val refreshToken = createRefreshToken()
+        val accessToken = createAccessToken(authentication.name, authentication.authorities)
+        val refreshToken = createRefreshToken(authentication.name)
         return JwtToken(
             grantType = "Bearer",
             accessToken = accessToken,
@@ -70,35 +71,33 @@ class JwtUtils @Autowired constructor(
         return false
     }
 
-    fun createAccessToken(authentication: Authentication): String {
-        val authorities = authentication.authorities
-            .map { it.toString() }
-            .reduce{ result, new -> "$result,$new" }
+    fun createAccessToken(username: String, authorities: Collection<out GrantedAuthority>): String {
         val now: Long = Date.from(Instant.now()).time
         val expireTime = Date(now + accessExpirationTime)
         return Jwts.builder()
-            .setSubject(authentication.name)
+            .setSubject(username)
             .claim("auth", authorities)
             .setExpiration(expireTime)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact()
     }
 
-    fun createRefreshToken(): String {
+    fun createRefreshToken(username: String): String {
         val now: Long = Date.from(Instant.now()).time
         val expireTime = Date(now + refreshExpirationTime)
         return Jwts.builder()
+            .setSubject(username)
             .setExpiration(expireTime)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact()
     }
 
-    fun parseClaims(accessToken: String): Claims =
+    fun parseClaims(token: String): Claims =
         try {
             Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJws(accessToken)
+                .parseClaimsJws(token)
                 .body
         } catch (exception: ExpiredJwtException) {
             exception.claims
