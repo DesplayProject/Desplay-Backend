@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 class ScrapController @Autowired constructor(
     private val scrapService: ScrapService
 ) : ScrapControllerSwagger {
+
     @PostMapping("/scrap/push")
     override fun pushScrap(@RequestBody scrapRequest: ScrapRequest): ResponseEntity<ScrapResponse> {
         val dto = scrapService.doLike(scrapRequest.toHandleDto())

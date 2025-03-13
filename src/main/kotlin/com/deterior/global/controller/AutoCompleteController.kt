@@ -25,9 +25,9 @@ class AutoCompleteController @Autowired constructor(
 
     @PostMapping("/update-string")
     override fun updateAutoCompleteString(
-        @RequestParam input: String
+        @RequestBody autoCompleteUpdateRequest: AutoCompleteUpdateRequest
     ): ResponseEntity<AutoCompleteUpdateResponse> {
-        autoCompleteService.updateAutoComplete(input)
-        return ResponseEntity.ok(AutoCompleteUpdateResponse(input))
+        autoCompleteService.updateAutoComplete(autoCompleteUpdateRequest.input)
+        return ResponseEntity.ok(AutoCompleteUpdateResponse(autoCompleteUpdateRequest.input))
     }
 }

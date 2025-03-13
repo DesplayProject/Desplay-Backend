@@ -17,5 +17,5 @@ interface AutoCompleteSwagger {
     fun getAutoCompleteString(input: String): ResponseEntity<AutoCompleteGetResponse>
 
     @Operation(summary = "자동완성 문자열 추가 \uD83D\uDD12", description = "자동완성될 문자열을 추가합니다.")
-    fun updateAutoCompleteString(@Parameter(description = "추가할 문자열", required = true) input: String): ResponseEntity<AutoCompleteUpdateResponse>
+    fun updateAutoCompleteString(@RequestBody autoCompleteUpdateRequest: AutoCompleteUpdateRequest): ResponseEntity<AutoCompleteUpdateResponse>
 }
