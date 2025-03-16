@@ -7,4 +7,5 @@ interface ScrapService {
 //    fun pushLike(scrapHandleDto: ScrapHandleDto): ScrapDto
 //    fun undoLike(scrapHandleDto: ScrapHandleDto): ScrapDto
     fun doLike(scrapHandleDto: ScrapHandleDto): ScrapDto
+    fun isLike(scrapHandleDto: ScrapHandleDto): Boolean
 }

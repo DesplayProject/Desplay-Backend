@@ -22,6 +22,11 @@ class ScrapServiceImpl @Autowired constructor(
         scrapRepository.isScrapExists(scrapHandleDto)
             .let { if (it) return undoLike(scrapHandleDto) else return pushLike(scrapHandleDto) }
 
+    @Transactional
+    override fun isLike(scrapHandleDto: ScrapHandleDto): Boolean {
+        return scrapRepository.isScrapExists(scrapHandleDto)
+    }
+
     private fun pushLike(scrapHandleDto: ScrapHandleDto): ScrapDto {
         val board = boardRepository.findById(scrapHandleDto.boardId).get()
         val member = memberRepository.findByUsername(scrapHandleDto.username)
